@@ -19,16 +19,17 @@ Created by Andreas Esau
 '''
 
 bl_info = {
-    "name": "COA Tools",
+    "name": "COA Tools2",
     "description": "This Addon provides a Toolset for a 2D Animation Workflow.",
-    "author": "Andreas Esau",
-    "version": (2, 0, 0),
-    "blender": (2, 80, 0),
+    "author": "Aodaruma",
+    "version": (1, 0, 0),
+    "blender": (3, 40, 0),
     "location": "View 3D > Tools > Cutout Animation Tools",
     "warning": "",
-    "wiki_url": "https://github.com/ndee85/coa_tools/wiki",
-    "tracker_url": "https://github.com/ndee85/coa_tools/issues",
-    "category": "Ndee Tools" }
+    "wiki_url": "https://github.com/aodaruma/coa_tools2/wiki",
+    "tracker_url": "https://github.com/aodaruma/coa_tools2/issues",
+    "category": "Animation",
+}
 
 
 import bpy
