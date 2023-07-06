@@ -65,6 +65,7 @@ function save_coords(center_sprites,export_path, export_name){
     }    
     
     var json_file = new File(export_path+"/"+export_name+".json");
+    json_file.encoding = "UTF8";
     json_file.open('w');
     
     json_file.writeln( write_line(tabs=0,'{'));

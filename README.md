@@ -1,4 +1,4 @@
-<img src="./coa_tools_logo.png" width="250">
+<img src="./assets/coa_tools_logo.png" width="250">
 
 # Cutout Animation Tools - Documentation
 
