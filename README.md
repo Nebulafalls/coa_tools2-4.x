@@ -39,13 +39,13 @@ Download the latest release from the [releases page](https://github.com/Aodaruma
 
 ### Installation
 
-#### Photoshop Exporter:
+#### Photoshop Exporter
 
 The .jsx file has to be copied into the photoshop scripts folder which is located in: `C:\Program Files\Adobe\Adobe Photoshop CC 2015\Presets\Scripts`
 
 Don’t forget to restart Photoshop and then go to File -> Scripts -> BlenderExporter.jsx
 
-#### GIMP Exporter:
+#### GIMP Exporter
 
 The coatools_exporter.py should be copied to your GIMP plug-ins folder which is located in:
 
@@ -53,7 +53,7 @@ It should show up under Files>Export to CoaTools... after your restart GIMP
 
 It should show up under Files>Export to CoaTools... after your restart GIMP
 
-#### Blender Addon:
+#### Blender Addon
 
 Zip the coa_folder.
 Go to File -> User Preferences -> Add-ons and click the “Install from file...” button.
