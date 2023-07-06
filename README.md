@@ -1,71 +1,51 @@
-<img src="./assets/coa_tools_logo.png" width="250">
+<!-- <img src="./assets/coa_tools_logo.png" width="250"> -->
 
-# Cutout Animation Tools - Documentation
+# COA tools 2
 
-This is the Documentation for the Blender/Godot Addon Cutout Animation Tools.
+the Addon of Cutout Animation Tools for Blender, which allows you to create cutout animations in Blender.
 
-If you like this addon and want to thank me with a small donation feel free to do this here:
+[![GitHub release](https://img.shields.io/github/release/Aodaruma/coa_tools2.svg)](https://github.com/Aodaruma/coa_tools2/releases)
 
-[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8TB6CNT9G8LEN)
+## Table of Contents
+
+- [Description](#description)
+- [Download and Installation](#download-and-installation)
+  - [Photoshop Exporter](#photoshop-exporter)
+  - [GIMP Exporter](#gimp-exporter)
+  - [Blender Addon](#blender-addon)
+
 
 ## Description
 
-The Cutout Animation Tools (COA Tools) Addon for blender is a 2D rigging and animation suite. It offers you similar tools as for example programs like Spine or Spriter. COA Tools offer you a rapid workflow to create 2D Cutout Character/Animations in blender. Thanks to blenders great animation system and and this addon you get a powerfull solution to create 2D animations. It is parted into 3 different components. Photoshop sprite exporter, Blender Addon, Godot importer.
+COA Tools 2 is an add-on developed by [ndee89](https://github.com/ndee85) and modified/remade by Aodaruma, which enables 2D rigging and animation within Blender.
 
-[Take a look at the addon in action.](https://www.youtube.com/playlist?list=PLPI26-KXCXpA-VMlDIWpmdq6M1m4LEjf_)
+[The original COA Tools by ndee89](https://github.com/ndee85/coa_tools) provided a rapid workflow for creating 2D cutout characters/animations in Blender. With COA Tools 2, the goal is to support Blender 3.4 and above, introduce automatic mesh generation, and establish a workflow with minimal features, allowing direct editing without going through proprietary modes.
 
-### Photoshop sprite exporter
+Currently, the focus for development is on two aspects:
 
-Quickly export photoshop layers into separate files with json coordinate informations. This can be used in blender to import sprites very quickly.
-Features:
+1. Photoshop sprite exporter
+2. Blender add-on
 
--   export layers as sprites
--   export folder with multiple layers as spritesheets
--   generate json data with all layer positions and spritesheet informations
+The intention is to concentrate on these areas, specifically addressing the necessary improvements.
 
-### GIMP sprite exporter
-
-Export GIMP layers and layer groups into separate files with json coordinate information. For additional usage information see the README.md in the GIMP folder.
-
-### Cutout Animation Tools Blender
-
-This is the biggest component, as most of the work will be done here.
-Features the addon offers are:
-
--   sprite importer (import single sprites or multiple, or use json data as import information)
--   animated spritesheet support for meshes
--   armature editing - superfast bone creation tool. Just draw bones and click append sprites to bones
--   mesh editing - draw vertex countours and fill them quickly with tesselated mesh. filling also unwraps and maps texture data
--   weight editing - fast weight editing for tesselated meshes
--   fast ik and stretch to constraint generation
--   enhanced animation handling for sprite_objects
--   Spriteobject outliner -> displays all containing sprites, armatures with bones for better and quick access to single sprites
--   ortho cam operator -> generates an orthogonal camera which can be used to render animations. Camera resolution fits perfectly the pixel space of sprites
--   json export - > Exports all sprite_object data to a json file. Supported features are: Bone and Sprite hierarchy export. Baked animation export
-
-### Godot Cutout Animation Importer
-
-This is an advanced importer that helps you get all your exported blender data into godot.
-Features:
-
--   Json importer
--   sprites, bones and animations get imported
--   clever reimport functionality. Offers the possibility to merge local changes that were made in godot to the newly imported scene. This enables a very flexible workflow. Work in blender, then export. Import in godot. Make additions like adding new nodes, adding custom animations. After reimport all local changes will be preserved if merging is enabled.
+Since development is a time and resource-intensive process, it's not easy to being solely undertaken by me. However, if there are multiple developers willing to contribute and if the project necessitates scalability, I am considering inviting collaborators to join :)
 
 ## Download and Installation
 
-Download or Clone the github repository to your local drive. If you download the ZIP File from Github, please make sure to unzip.
-Don't try to install the downloaded zip file directly in blender. This won't work. Once unzipped follow the installation instructions below.
+### Download
 
-### Photoshop Exporter:
+Download the latest release from the [releases page](https://github.com/Aodaruma/coa_tools2/releases).
 
-The .jsx file has to be copied into the photoshop scripts folder which is located in:
 
-C:\Program Files\Adobe\Adobe Photoshop CC 2015\Presets\Scripts
+### Installation
+
+#### Photoshop Exporter
+
+The .jsx file has to be copied into the photoshop scripts folder which is located in: `C:\Program Files\Adobe\Adobe Photoshop CC 2015\Presets\Scripts`
 
 Don’t forget to restart Photoshop and then go to File -> Scripts -> BlenderExporter.jsx
 
-### GIMP Exporter:
+#### GIMP Exporter
 
 The coatools_exporter.py should be copied to your GIMP plug-ins folder which is located in:
 
@@ -73,7 +53,7 @@ It should show up under Files>Export to CoaTools... after your restart GIMP
 
 It should show up under Files>Export to CoaTools... after your restart GIMP
 
-### Blender Addon:
+#### Blender Addon
 
 Zip the coa_folder.
 Go to File -> User Preferences -> Add-ons and click the “Install from file...” button.
