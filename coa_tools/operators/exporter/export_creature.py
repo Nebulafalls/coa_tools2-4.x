@@ -1,9 +1,9 @@
 
 '''
-Copyright (C) 2019 Andreas Esau
-andreasesau@gmail.com
+Copyright (C) 2019 Aodaruma
+hi@aodaruma.net
 
-Created by Andreas Esau
+Created by Aodaruma
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

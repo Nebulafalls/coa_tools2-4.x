@@ -1,8 +1,8 @@
-'''
-Copyright (C) 2015 Andreas Esau
-andreasesau@gmail.com
+"""
+Copyright (C) 2023 Aodaruma
+hi@aodaruma.net
 
-Created by Andreas Esau
+Created by Aodaruma
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,11 +16,12 @@ Created by Andreas Esau
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
-    
+"""
+
 import webbrowser
 import bpy
 from bpy.props import *
+
 
 class COATOOLS_OT_Donate(bpy.types.Operator):
     bl_idname = "coa_operator.coa_donate"
@@ -33,41 +34,42 @@ class COATOOLS_OT_Donate(bpy.types.Operator):
         return True
 
     def execute(self, context):
-        webbrowser.open("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8TB6CNT9G8LEN")
+        webbrowser.open(
+            "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8TB6CNT9G8LEN"
+        )
         return {"FINISHED"}
-    
+
+
 class COATOOLS_OT_Tweet(bpy.types.Operator):
     bl_idname = "coa_operator.coa_tweet"
     bl_label = "Tweet this addon"
-    bl_description = "You like this addon and want to share it with others. Just tweet it."
+    bl_description = (
+        "You like this addon and want to share it with others. Just tweet it."
+    )
     bl_options = {"REGISTER"}
-    
+
     link: StringProperty(default="")
     text: StringProperty(default="")
     hashtags: StringProperty(default="")
     via: StringProperty(default="")
-    
+
     @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        #self.link = self.link.replace(" ","%")
-        #webbrowser.open("https://twitter.com/intent/tweet?text=Check%out%#2DAnimTools%by%@ndee85")
-        
+        # self.link = self.link.replace(" ","%")
+        # webbrowser.open("https://twitter.com/intent/tweet?text=Check%out%#2DAnimTools%by%@ndee85")
+
         url = "https://twitter.com/intent/tweet?"
         if self.link != "":
-            url += "&url="+self.link
-        if self.text != "":    
-            url += "&text="+self.text.replace(" ","+")
-        if self.hashtags != "":    
-            url += "&hashtags="+self.hashtags
+            url += "&url=" + self.link
+        if self.text != "":
+            url += "&text=" + self.text.replace(" ", "+")
+        if self.hashtags != "":
+            url += "&hashtags=" + self.hashtags
         if self.via != "":
-            url += "&via="+self.via
-        #"https://twitter.com/intent/tweet?url=https://www.youtube.com/ndee85&text=Hello+World&hashtags=coatools,test&via=ndee85"    
+            url += "&via=" + self.via
+        # "https://twitter.com/intent/tweet?url=https://www.youtube.com/ndee85&text=Hello+World&hashtags=coatools,test&via=ndee85"
         webbrowser.open(url)
         return {"FINISHED"}
-            
-        
-        
-        

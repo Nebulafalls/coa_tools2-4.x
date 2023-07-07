@@ -1,8 +1,8 @@
-'''
-Copyright (C) 2015 Andreas Esau
-andreasesau@gmail.com
+"""
+Copyright (C) 2023 Aodaruma
+hi@aodaruma.net
 
-Created by Andreas Esau
+Created by Aodaruma
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ Created by Andreas Esau
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 
 bl_info = {
     "name": "COA Tools2",
@@ -46,79 +46,80 @@ from . import addon_updater_ops
 from . import properties as props
 
 from . import ui as user_interface
-from . ui import preview_collections
+from .ui import preview_collections
 from . import outliner
-from . operators.pie_menu import preview_collections_pie
-from . functions import *
+from .operators.pie_menu import preview_collections_pie
+from .functions import *
 
-from . operators import create_sprite_object
-from . operators import help_display
+from .operators import create_sprite_object
+from .operators import help_display
 
-from . operators import advanced_settings
-from . operators import animation_handling
-from . operators import create_ortho_cam
-from . operators import create_spritesheet_preview
-from . operators import donations
-from . operators import draw_bone_shape
-from . operators import edit_armature
-from . operators import edit_mesh
-from . operators import edit_shapekey
-from . operators import edit_weights
-from . operators import import_sprites
-from . operators import material_converter
-from . operators import pie_menu
-from . operators import slot_handling
-from . operators import toggle_animation_area
-from . operators import view_sprites
-from . operators import version_converter
-from . operators import change_alpha_mode
+from .operators import advanced_settings
+from .operators import animation_handling
+from .operators import create_ortho_cam
+from .operators import create_spritesheet_preview
+from .operators import donations
+from .operators import draw_bone_shape
+from .operators import edit_armature
+from .operators import edit_mesh
+from .operators import edit_shapekey
+from .operators import edit_weights
+from .operators import import_sprites
+from .operators import material_converter
+from .operators import pie_menu
+from .operators import slot_handling
+from .operators import toggle_animation_area
+from .operators import view_sprites
+from .operators import version_converter
+from .operators import change_alpha_mode
 
-from . operators.exporter import export_dragonbones
-from . operators.exporter import export_creature
+from .operators.exporter import export_dragonbones
+from .operators.exporter import export_creature
 
 # register
-################################## 
+##################################
 
 import traceback
-
 
 
 class COAToolsPreferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
-    show_donate_icon: bpy.props.BoolProperty(name="Show Donate Icon",default=False)
-    sprite_import_export_scale: bpy.props.FloatProperty(name="Sprite import/export scale",default=0.01)
+    show_donate_icon: bpy.props.BoolProperty(name="Show Donate Icon", default=False)
+    sprite_import_export_scale: bpy.props.FloatProperty(
+        name="Sprite import/export scale", default=0.01
+    )
 
     auto_check_update: bpy.props.BoolProperty(
-    name = "Auto-check for Update",
-    description = "If enabled, auto-check for updates using an interval",
-    default = True,
+        name="Auto-check for Update",
+        description="If enabled, auto-check for updates using an interval",
+        default=True,
     )
     updater_intrval_months: bpy.props.IntProperty(
-    name='Months',
-    description = "Number of months between checking for updates",
-    default=0,
-    min=0
+        name="Months",
+        description="Number of months between checking for updates",
+        default=0,
+        min=0,
     )
     updater_intrval_days: bpy.props.IntProperty(
-    name='Days',
-    description = "Number of days between checking for updates",
-    default=1,
-    min=0,
+        name="Days",
+        description="Number of days between checking for updates",
+        default=1,
+        min=0,
     )
     updater_intrval_hours: bpy.props.IntProperty(
-    name='Hours',
-    description = "Number of hours between checking for updates",
-    default=0,
-    min=0,
-    max=23
+        name="Hours",
+        description="Number of hours between checking for updates",
+        default=0,
+        min=0,
+        max=23,
     )
     updater_intrval_minutes: bpy.props.IntProperty(
-    name='Minutes',
-    description = "Number of minutes between checking for updates",
-    default=0,
-    min=0,
-    max=59
+        name="Minutes",
+        description="Number of minutes between checking for updates",
+        default=0,
+        min=0,
+        max=59,
     )
 
     def draw(self, context):
@@ -134,8 +135,7 @@ classes = (
     # outliner
     outliner.COAOutliner,
     outliner.COATOOLS_UL_Outliner,
-
-    #properties
+    # properties
     props.UVData,
     props.SlotData,
     props.Event,
@@ -146,8 +146,7 @@ classes = (
     props.MeshProperties,
     props.BoneProperties,
     props.WindowManagerProperties,
-
-    #operator
+    # operator
     create_sprite_object.COATOOLS_OT_CreateSpriteObject,
     create_sprite_object.COATOOLS_OT_DefineSpriteObject,
     import_sprites.JsonImportData,
@@ -157,7 +156,6 @@ classes = (
     import_sprites.COATOOLS_OT_LoadJsonData,
     import_sprites.COATOOLS_UL_JsonImport,
     import_sprites.COATOOLS_OT_ReImportSprite,
-
     user_interface.COATOOLS_OT_ChangeShadingMode,
     user_interface.COATOOLS_PT_Info,
     user_interface.COATOOLS_PT_ObjectProperties,
@@ -166,17 +164,13 @@ classes = (
     user_interface.COATOOLS_UL_EventCollection,
     user_interface.COATOOLS_OT_SelectChild,
     user_interface.COATOOLS_PT_Collections,
-
     view_sprites.COATOOLS_OT_ChangeZOrdering,
     view_sprites.COATOOLS_OT_ViewSprite,
-
     advanced_settings.COATOOLS_OT_AdvancedSettings,
-
     edit_mesh.COATOOLS_OT_ReprojectSpriteTexture,
     edit_mesh.COATOOLS_OT_GenerateMeshFromEdgesAndVerts,
     edit_mesh.COATOOLS_OT_DrawContour,
     edit_mesh.COATOOLS_OT_PickEdgeLength,
-
     edit_armature.COATOOLS_OT_TooglePoseMode,
     edit_armature.COATOOLS_OT_BindMeshToBones,
     edit_armature.COATOOLS_OT_QuickArmature,
@@ -185,20 +179,16 @@ classes = (
     edit_armature.COATOOLS_OT_SetIK,
     edit_armature.COATOOLS_OT_CreateStretchIK,
     edit_armature.COATOOLS_OT_RemoveStretchIK,
-
     edit_shapekey.COATOOLS_OT_LeaveSculptmode,
     edit_shapekey.COATOOLS_OT_ShapekeyAdd,
     edit_shapekey.COATOOLS_OT_ShapekeyRemove,
     edit_shapekey.COATOOLS_OT_ShapekeyRename,
     edit_shapekey.COATOOLS_OT_EditShapekeyMode,
-
     edit_weights.COATOOLS_OT_EditWeights,
-
     slot_handling.COATOOLS_OT_ExtractSlots,
     slot_handling.COATOOLS_OT_CreateSlotObject,
     slot_handling.COATOOLS_OT_MoveSlotItem,
     slot_handling.COATOOLS_OT_RemoveFromSlot,
-
     animation_handling.COATOOLS_OT_AddKeyframe,
     animation_handling.COATOOLS_OT_DuplicateAnimationCollection,
     animation_handling.COATOOLS_OT_AddAnimationCollection,
@@ -209,48 +199,42 @@ classes = (
     animation_handling.COATOOLS_OT_RemoveEvent,
     animation_handling.COATOOLS_OT_AddTimelineEvent,
     animation_handling.COATOOLS_OT_RemoveTimelineEvent,
-
     create_ortho_cam.COATOOLS_OT_CreateOrtpographicCamera,
     create_ortho_cam.COATOOLS_OT_AlignCamera,
-
     create_spritesheet_preview.COATOOLS_OT_SelectFrameThumb,
-
     help_display.COATOOLS_OT_ShowHelp,
-
     draw_bone_shape.COATOOLS_OT_DrawBoneShape,
-
     pie_menu.COATOOLS_MT_menu,
     pie_menu.COATOOLS_MT_keyframe_menu_01,
     pie_menu.COATOOLS_MT_keyframe_menu_add,
     pie_menu.COATOOLS_MT_keyframe_menu_remove,
-
     toggle_animation_area.COATOOLS_OT_ToggleAnimationArea,
     version_converter.COATOOLS_OT_VersionConverter,
-
     change_alpha_mode.COATOOLS_OT_ChangeAlphaMode,
     change_alpha_mode.COATOOLS_OT_ChangeTextureInterpolationMode,
-
     # exporter
     export_dragonbones.COATOOLS_OT_DragonBonesExport,
     export_dragonbones.COATOOLS_PT_ExportPanel,
     export_creature.COATOOLS_OT_CreatureExport,
-
 )
 
 addon_keymaps = []
+
+
 def register_keymaps():
     kc = bpy.context.window_manager.keyconfigs.addon
     if kc:
         km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
-        kmi = km.keymap_items.new('view3d.move', 'MIDDLEMOUSE', 'PRESS')
+        kmi = km.keymap_items.new("view3d.move", "MIDDLEMOUSE", "PRESS")
         kmi.active = False
 
     addon = bpy.context.window_manager.keyconfigs.addon
     km = addon.keymaps.new(name="3D View", space_type="VIEW_3D")
     # insert keymap items here
-    kmi = km.keymap_items.new("wm.call_menu_pie", type = "F", value = "PRESS")
+    kmi = km.keymap_items.new("wm.call_menu_pie", type="F", value="PRESS")
     kmi.properties.name = "COATOOLS_MT_menu"
     addon_keymaps.append(km)
+
 
 def unregister_keymaps():
     wm = bpy.context.window_manager
@@ -312,6 +296,7 @@ def check_for_deprecated_data(dummy):
         if "sprite_object" in obj:
             bpy.context.scene.coa_tools.deprecated_data_found = True
 
+
 @persistent
 def check_view_2D_3D(dummy):
     context = bpy.context
@@ -336,12 +321,13 @@ def set_shading(dummy):
             break
     bpy.ops.coa_tools.updater_check_now()
 
+
 @persistent
 def update_properties(scene, depsgraph):
     context = bpy.context
     for obj in bpy.data.objects:
         obj_eval = obj.evaluated_get(depsgraph)
-        
+
         if obj_eval.coa_tools.slot_index != obj_eval.coa_tools.slot_index_last:
             change_slot_mesh_data(bpy.context, obj, obj_eval)
             obj.coa_tools.slot_index_last = obj_eval.coa_tools.slot_index

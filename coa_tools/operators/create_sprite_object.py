@@ -1,8 +1,8 @@
-'''
-Copyright (C) 2015 Andreas Esau
-andreasesau@gmail.com
+"""
+Copyright (C) 2023 Aodaruma
+hi@aodaruma.net
 
-Created by Andreas Esau
+Created by Aodaruma
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@ Created by Andreas Esau
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
-    
+"""
+
 import bpy
 import bpy_extras
 import bpy_extras.view3d_utils
@@ -26,12 +26,21 @@ import mathutils
 from mathutils import Vector, Matrix, Quaternion
 import math
 import bmesh
-from bpy.props import FloatProperty, IntProperty, BoolProperty, StringProperty, CollectionProperty, FloatVectorProperty, EnumProperty, IntVectorProperty
+from bpy.props import (
+    FloatProperty,
+    IntProperty,
+    BoolProperty,
+    StringProperty,
+    CollectionProperty,
+    FloatVectorProperty,
+    EnumProperty,
+    IntVectorProperty,
+)
 import os
 from bpy_extras.io_utils import ExportHelper, ImportHelper
 import json
 from bpy.app.handlers import persistent
-from .. functions import *
+from ..functions import *
 
 
 ######################################################################################################################################### Create Sprite Object
@@ -43,13 +52,19 @@ class COATOOLS_OT_CreateSpriteObject(bpy.types.Operator):
     def execute(self, context):
         obj = context.active_object
 
-        if context.active_object != None and obj.type == "ARMATURE" and obj.mode == "POSE":
+        if (
+            context.active_object != None
+            and obj.type == "ARMATURE"
+            and obj.mode == "POSE"
+        ):
             context.view_layer.objects.active = None
-        bpy.ops.object.armature_add(radius=1,
-                                    enter_editmode=False,
-                                    align='WORLD',
-                                    location=(0, 0, 0),
-                                    rotation=(0, 0, 0))
+        bpy.ops.object.armature_add(
+            radius=1,
+            enter_editmode=False,
+            align="WORLD",
+            location=(0, 0, 0),
+            rotation=(0, 0, 0),
+        )
         sprite_object = bpy.context.active_object
         sprite_object.name = "SpriteObject"
         sprite_object.show_name = True
@@ -84,5 +99,3 @@ class COATOOLS_OT_DefineSpriteObject(bpy.types.Operator):
 
         bpy.ops.ed.undo_push(message="Define as Sprite Object")
         return {"FINISHED"}
-
-

@@ -1,8 +1,8 @@
-'''
-Copyright (C) 2015 Andreas Esau
-andreasesau@gmail.com
+"""
+Copyright (C) 2023 Aodaruma
+hi@aodaruma.net
 
-Created by Andreas Esau
+Created by Aodaruma
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ Created by Andreas Esau
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 
 import bpy
 import bpy_extras
@@ -26,8 +26,16 @@ import mathutils
 from mathutils import Vector, Matrix, Quaternion
 import math
 import bmesh
-from bpy.props import FloatProperty, IntProperty, BoolProperty, StringProperty, CollectionProperty, FloatVectorProperty, \
-    EnumProperty, IntVectorProperty
+from bpy.props import (
+    FloatProperty,
+    IntProperty,
+    BoolProperty,
+    StringProperty,
+    CollectionProperty,
+    FloatVectorProperty,
+    EnumProperty,
+    IntVectorProperty,
+)
 import os
 from bpy_extras.io_utils import ExportHelper, ImportHelper
 import json
@@ -41,8 +49,12 @@ class COATOOLS_OT_ChangeAlphaMode(bpy.types.Operator):
     bl_description = ""
     bl_options = {"REGISTER"}
 
-    items = (("BLEND","Blend","Blend"),("HASHED","Hashed","Hashed"),("CLIP","Clip","Clip"))
-    blend_method: EnumProperty(name="Blend Method",items=items)
+    items = (
+        ("BLEND", "Blend", "Blend"),
+        ("HASHED", "Hashed", "Hashed"),
+        ("CLIP", "Clip", "Clip"),
+    )
+    blend_method: EnumProperty(name="Blend Method", items=items)
 
     @classmethod
     def poll(cls, context):
@@ -67,7 +79,12 @@ class COATOOLS_OT_ChangeTextureInterpolationMode(bpy.types.Operator):
     bl_description = ""
     bl_options = {"REGISTER"}
 
-    items = (("Linear","Linear","Linear"),("Closest","Closest","Closest"),("Cubic","Cubic","Cubic"),("Smart","Smart","Smart"))
+    items = (
+        ("Linear", "Linear", "Linear"),
+        ("Closest", "Closest", "Closest"),
+        ("Cubic", "Cubic", "Cubic"),
+        ("Smart", "Smart", "Smart"),
+    )
     interpolation_method: EnumProperty(name="Interpolation Method", items=items)
 
     @classmethod
