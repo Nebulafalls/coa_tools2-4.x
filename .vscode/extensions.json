@@ -3,6 +3,7 @@
         "ms-python.black-formatter",
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "davidanson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "jacqueslucke.blender-development"
     ]
 }

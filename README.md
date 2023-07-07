@@ -13,7 +13,7 @@ the Addon of Cutout Animation Tools for Blender, which allows you to create cuto
   - [Photoshop Exporter](#photoshop-exporter)
   - [GIMP Exporter](#gimp-exporter)
   - [Blender Addon](#blender-addon)
-
+- [Development](#development)
 
 ## Description
 
@@ -58,3 +58,29 @@ It should show up under Files>Export to CoaTools... after your restart GIMP
 Zip the coa_folder.
 Go to File -> User Preferences -> Add-ons and click the “Install from file...” button.
 This will install and enable the Addon for Blender. Don’t forget to save the user preferences, otherwise the addon will not be activated after restart.
+
+## Development
+
+The source code for development is in the main branch. `coa_tools2` folder is a main body of the add-on. For efficient development, you can create a link to that folder in the Blender `addons` folder.
+
+``` bash
+# Linux
+LATEST_BLENDER_DIR=$(find "$HOME/.config/blender" -d 1 | grep -e "[0-9]\.[0-9]" | sort -rh | head -n 1)
+ln -s "$PWD/coa_tools2" "$LATEST_BLENDER_DIR/scripts/addons/coa_tools2"
+```
+
+``` bash
+# macOS
+LATEST_BLENDER_DIR=$(find "$HOME/Library/Application Support/Blender" -d 1 | grep -e "[0-9]\.[0-9]" | sort -rh | head -n 1)
+ln -s "$PWD/coa_tools2" "$LATEST_BLENDER_DIR/scripts/addons/coa_tools2"
+```
+
+```powershell
+# Windows PowerShell
+$LatestBlenderDir = (Get-ChildItem "$env:APPDATA\Blender Foundation\Blender" -Directory | Where-Object { $_.Name -match "[0-9]\.[0-9]" } | Sort-Object -Descending | Select-Object -First 1).FullName
+New-Item -ItemType Junction -Path "$LatestBlenderDir\scripts\addons\coa_tools2" -Value "$(Get-Location)\coa_tools2"
+```
+
+I'm using pipenv for dependency management. You can install the dependencies with `pipenv sync` if you have already installed pipenv.
+
+Some extensions of vscode are recommended for development and written in `.vscode/extensions.json`. Feel free to use them.
