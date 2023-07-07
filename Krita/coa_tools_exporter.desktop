@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 ServiceTypes=Krita/PythonPlugin
-X-KDE-Library=coa_tools_exporter
+X-KDE-Library=coa_tools2_exporter
 X-Python-2-Compatible=false
 X-Krita-Manual=myPluginManual.html
 Name=COA Tools Exporter

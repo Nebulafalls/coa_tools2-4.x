@@ -159,9 +159,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-Blender/coa_tools/__pycache__
-Blender/coa_tools/operators/__pycache__
+Blender/coa_tools2/__pycache__
+Blender/coa_tools2/operators/__pycache__
 *.pyc
-Blender/coa_tools/venv
-Blender/coa_tools/.idea/
-Krita/coa_tools_exporter/.idea/
+Blender/coa_tools2/venv
+Blender/coa_tools2/.idea/
+Krita/coa_tools2_exporter/.idea/

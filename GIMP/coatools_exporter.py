@@ -7,7 +7,7 @@
 # DESCRIPTION
 #   CoaTools Exporter is a plug-in for GIMP to export layered cut-out animation
 #   object or characters to Cutout Animation Tools: 2D Animation Tools for Blender 
-#   (see https://github.com/ndee85/coa_tools)
+#   (see https://github.com/Aodaruma/coa_tools22)
 #
 # INSTALLATION
 #   Drop the script in your plug-ins folder. On Linux this is ~/.gimp-2.8/plug-ins/
@@ -19,7 +19,7 @@ author = [ 'Ragnar Brynjúlfsson <me@ragnarb.com>', ' ']
 # COPYRIGHT
 copyright = "Copyright 2016 © Ragnar Brynjúlfsson"
 # WEBSITE
-website = "https://github.com/ndee85/coa_tools"
+website = "https://github.com/Aodaruma/coa_tools22"
 plugin = "CoaTools Exporter"
 # LICENSE
 license = """
@@ -259,7 +259,7 @@ register(
     "python_fu_coatools",
     ("Tool for exporting layered characters and objects to\n"
      "Cutout Animation Tools: 2D Animation Tools for Blender\n\n"
-     "See https://github.com/ndee85/coa_tools"),
+     "See https://github.com/Aodaruma/coa_tools22"),
     "GNU GPL v3 or later.",
     "Ragnar Brynjúlfsson",
     "Ragnar Brynjúlfsson",
