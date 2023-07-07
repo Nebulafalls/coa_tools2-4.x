@@ -15,7 +15,7 @@ class COAToolsDocker(DockWidget):
         self.app = Application
         self.doc = self.app.activeDocument()
 
-        self.storedData = {"COA_TOOLS_DATA": "", "export_path": "", "export_name": ""}
+        self.storedData = {"COA_TOOLS2_DATA": "", "export_path": "", "export_name": ""}
 
         # self.exportPath = "C:/Users/g041481/Desktop/tmp/krita_export"
         self.coaObjectName = "test"
@@ -54,7 +54,7 @@ class COAToolsDocker(DockWidget):
             if self.storedData["export_name"] != "" and self.storedData["export_path"] != "":
                 dataNode = None
                 for node in self.doc.rootNode().childNodes():
-                    if "COA_TOOLS_DATA" in node.name():
+                    if "COA_TOOLS2_DATA" in node.name():
                         dataNode = node
 
                 if dataNode == None:
@@ -68,7 +68,7 @@ class COAToolsDocker(DockWidget):
         if self.doc != None and self.doc.rootNode() != None:
             dataNode = None
             for node in self.doc.rootNode().childNodes():
-                if "COA_TOOLS_DATA" in node.name():
+                if "COA_TOOLS2_DATA" in node.name():
                     dataNode = node
 
             if dataNode != None:
