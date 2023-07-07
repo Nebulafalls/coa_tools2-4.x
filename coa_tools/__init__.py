@@ -58,7 +58,6 @@ from .operators import advanced_settings
 from .operators import animation_handling
 from .operators import create_ortho_cam
 from .operators import create_spritesheet_preview
-from .operators import donations
 from .operators import draw_bone_shape
 from .operators import edit_armature
 from .operators import edit_mesh
@@ -84,11 +83,6 @@ import traceback
 
 class COAToolsPreferences(bpy.types.AddonPreferences):
     bl_idname = __package__
-
-    show_donate_icon: bpy.props.BoolProperty(name="Show Donate Icon", default=False)
-    sprite_import_export_scale: bpy.props.FloatProperty(
-        name="Sprite import/export scale", default=0.01
-    )
 
     auto_check_update: bpy.props.BoolProperty(
         name="Auto-check for Update",
@@ -124,7 +118,6 @@ class COAToolsPreferences(bpy.types.AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
-        # layout.prop(self, "show_donate_icon")
         layout.prop(self, "sprite_import_export_scale")
 
         addon_updater_ops.update_settings_ui(self, context)
