@@ -1,6 +1,6 @@
 '''
 Copyright (C) 2023 Aodaruma
-andreasesau @ gmail.com
+hi@aodaruma.net
 
 Created by Aodaruma
 
