@@ -43,6 +43,7 @@ import json
 from . import functions
 from . import addon_updater_ops
 from .outliner import *
+from .operators import convert_from_old
 
 # from . import preview_collections
 
@@ -99,10 +100,16 @@ class COATOOLS2_PT_Info(bpy.types.Panel):
                 "coa_tools2.convert_deprecated_data", icon="LIBRARY_DATA_BROKEN"
             )
 
+        if context.scene.coa_tools2.old_coatools_found:
+            row = layout.row()
+            row.operator(
+                "coa_tools2.convert_old_version_coatools", icon="LIBRARY_DATA_BROKEN"
+            )
+
         if (
             context.space_data.shading.type != "RENDERED"
             or context.scene.view_settings.view_transform != "Standard"
-        ) and not context.scene.coa_tools2.deprecated_data_found:
+        ) and not context.scene.coa_tools2.deprecated_data_found and not context.scene.coa_tools2.old_coatools_found:
             row = layout.row()
             row.operator(
                 "coa_tools2.change_shading_mode",
@@ -111,7 +118,6 @@ class COATOOLS2_PT_Info(bpy.types.Panel):
             )
 
         addon_updater_ops.update_notice_box_ui(self, context)
-
 
 last_obj = None
 
@@ -125,7 +131,7 @@ class COATOOLS2_PT_ObjectProperties(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        if not context.scene.coa_tools2.deprecated_data_found:
+        if not context.scene.coa_tools2.deprecated_data_found and not context.scene.coa_tools2.old_coatools_found:
             return context
 
     def draw_outliner(self, context, layout, sprite_object, scene):
@@ -417,7 +423,7 @@ class COATOOLS2_PT_Tools(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        if not context.scene.coa_tools2.deprecated_data_found:
+        if not context.scene.coa_tools2.deprecated_data_found and not context.scene.coa_tools2.old_coatools_found:
             return context
 
     def draw(self, context):
@@ -976,7 +982,7 @@ class COATOOLS2_PT_Collections(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        if not context.scene.coa_tools2.deprecated_data_found:
+        if not context.scene.coa_tools2.deprecated_data_found and not context.scene.coa_tools2.old_coatools_found:
             return context
 
     def draw(self, context):
