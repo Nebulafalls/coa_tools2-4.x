@@ -189,7 +189,22 @@ class COATOOLS2_OT_ReprojectSpriteTexture(bpy.types.Operator):
         obj.data.coa_tools2.hide_base_sprite = False
         bpy.ops.object.mode_set(mode="EDIT",toggle=False)
         bm = bmesh.from_edit_mesh(obj.data)
-        
+        bm.verts.ensure_lookup_table()
+
+        image_size = [-1, -1]
+        if "coa_base_sprite" in obj.vertex_groups:
+            base_sprite_idx = obj.vertex_groups["coa_base_sprite"].index
+            for i, v in enumerate(obj.data.vertices):
+                # if bm.verts[i].select:
+                for g in v.groups:
+                    if g.group == base_sprite_idx:
+                        vert = bm.verts[i]
+                        if vert.co.x > image_size[0]:
+                            image_size[0] = vert.co.x
+                        if -vert.co.z > image_size[1]:
+                            image_size[1] = -vert.co.z
+                        # print("vert.co", vert.co)
+
         selected_verts = []
         for vert in bm.verts:
             if vert.select:
@@ -202,9 +217,26 @@ class COATOOLS2_OT_ReprojectSpriteTexture(bpy.types.Operator):
             vert.select = True
 
         object_matrix = obj.matrix_world.copy()
-        obj.rotation_euler = [0,0,0]
-        obj.scale = [1,1,1]
-        bpy.ops.uv.project_from_view(camera_bounds=False, correct_aspect=True, scale_to_bounds=True)        
+        obj.rotation_euler = [0, 0, 0]
+        obj.scale = [1, 1, 1]
+        # print("image_size", image_size)
+        if image_size[0] > 0 and image_size[1] > 0:
+            uv_layer = bm.loops.layers.uv.active
+            for face in bm.faces:
+                for loop in face.loops:
+                    loop[uv_layer].uv = (
+                        loop.vert.co.x / image_size[0],
+                        loop.vert.co.z / image_size[1] + 1,
+                    )
+        else:
+            bpy.ops.uv.project_from_view(
+                camera_bounds=False, correct_aspect=True, scale_to_bounds=True
+            )
+
+        # uv_layer = bm.loops.layers.uv.active
+        # for face in bm.faces:
+        #     for loop in face.loops:
+        #         loop[uv_layer].uv = loop.vert.co.xz
         obj.matrix_world = object_matrix
         for face in bm.faces:
             face.select = False
