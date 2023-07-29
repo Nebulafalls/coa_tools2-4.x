@@ -50,7 +50,7 @@ class COATOOLS2_OT_ConvertOldVersionCoatools(bpy.types.Operator):
 
     def change_customdata_name(self, context, obj):
         # change custom property's name "coa_tools" to "coa_tools2"
-        if "coa_tools" in obj:
+        if "coa_tools" in obj or obj.get("coa_tools") is not None:
             obj["coa_tools2"] = obj["coa_tools"]
             # obj["coa_tools"]
             del obj["coa_tools"]
