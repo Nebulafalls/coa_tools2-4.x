@@ -668,9 +668,9 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
             snapped_pos, type, bm_ob = [self.mouse_pos_3d,None,None]
         if not use_snap:
             snapped_pos = position
-        
-        snapped_pos = self.limit_cursor_by_bounds(context,snapped_pos)
-        
+
+        # snapped_pos = self.limit_cursor_by_bounds(context, snapped_pos)
+
         for edge in bm.edges:
             edge.select = False
         for vert in bm.verts:
@@ -779,7 +779,12 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
             if vert.select:
                 verts.append(vert)
         for vert in verts:
-            vert.co = context.active_object.matrix_world.inverted() @ self.limit_cursor_by_bounds(context,context.active_object.matrix_world @ vert.co)
+            vert.co = (
+                context.active_object.matrix_world.inverted()
+                # @ self.limit_cursor_by_bounds(
+                #     context, context.active_object.matrix_world @ vert.co
+                # )
+            )
         bmesh.update_edit_mesh(context.active_object.data)
     
     
@@ -893,12 +898,16 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
         scene = bpy.context.scene
         
         if scene.coa_tools2.surface_snap:
-            coord, point_type, bm_ob = self.snapped_vert_coord , self.point_type , self.bm_objs
-        else:    
-            coord, point_type, bm_ob = [None,None,None]
-            
-        coord = self.limit_cursor_by_bounds(bpy.context,coord)
-        
+            coord, point_type, bm_ob = (
+                self.snapped_vert_coord,
+                self.point_type,
+                self.bm_objs,
+            )
+        else:
+            coord, point_type, bm_ob = [None, None, None]
+
+        # coord = self.limit_cursor_by_bounds(bpy.context, coord)
+
         intersection_points = []
         if self.selected_vert_coord != None and coord != None:
             obj = bpy.context.active_object
@@ -1035,10 +1044,11 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
                     self.intersection_points = self.get_intersecting_lines(self.mouse_pos_3d,bm)
                 else:
                     self.intersection_points = []
-                
-                self.snapped_vert_coord = self.limit_cursor_by_bounds(context, self.snapped_vert_coord)
-                
-                    
+
+                # self.snapped_vert_coord = self.limit_cursor_by_bounds(
+                #     context, self.snapped_vert_coord
+                # )
+
                 ### check if mouse is in 3d View
                 coord = mathutils.Vector((event.mouse_region_x, event.mouse_region_y))
                 
@@ -1480,9 +1490,11 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
 
             if functions.get_active_tool("EDIT_MESH") == "coa_tools2.draw_polygon":
                 ### draw lines and dots
-                #mouse_pos_in_bounds = self.limit_cursor_by_bounds(bpy.context,self.mouse_pos_3d)
-                if self.type not in ["K","C","B","R","G","S"] and self.in_view_3d:
-                    vertex_vec_new = self.limit_cursor_by_bounds(bpy.context,self.mouse_pos_3d)
+                # mouse_pos_in_bounds = self.limit_cursor_by_bounds(bpy.context,self.mouse_pos_3d)
+                if self.type not in ["K", "C", "B", "R", "G", "S"] and self.in_view_3d:
+                    # vertex_vec_new = self.limit_cursor_by_bounds(
+                    #     bpy.context, self.mouse_pos_3d
+                    # )
                     vertex_vec_new = self.snapped_vert_coord + y_offset
 
                     color = green
