@@ -85,6 +85,10 @@ import traceback
 class COATools2Preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
+    sprite_import_export_scale: bpy.props.FloatProperty(
+        name="Sprite import/export scale", default=0.01
+    )
+
     auto_check_update: bpy.props.BoolProperty(
         name="Auto-check for Update",
         description="If enabled, auto-check for updates using an interval",
