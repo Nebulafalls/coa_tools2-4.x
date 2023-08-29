@@ -442,6 +442,7 @@ class SceneProperties(bpy.types.PropertyGroup):
     frame_start: IntProperty(name="Frame Start",default=0,min=0,update=update_frame_range)
     frame_end: IntProperty(name="Frame End",default=250,min=1,update=update_frame_range)
     deprecated_data_found: BoolProperty(name="Deprecated Data", default=False)
+    old_coatools_found: BoolProperty(name="Old CoaTools Data", default=False)
 
 
     # Exporer Properties

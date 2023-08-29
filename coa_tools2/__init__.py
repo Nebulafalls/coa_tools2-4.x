@@ -71,6 +71,7 @@ from .operators import toggle_animation_area
 from .operators import view_sprites
 from .operators import version_converter
 from .operators import change_alpha_mode
+from .operators import convert_from_old
 
 from .operators.exporter import export_dragonbones
 from .operators.exporter import export_creature
@@ -83,6 +84,10 @@ import traceback
 
 class COATools2Preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
+
+    sprite_import_export_scale: bpy.props.FloatProperty(
+        name="Sprite import/export scale", default=0.01
+    )
 
     auto_check_update: bpy.props.BoolProperty(
         name="Auto-check for Update",
@@ -203,6 +208,7 @@ classes = (
     pie_menu.COATOOLS2_MT_keyframe_menu_remove,
     toggle_animation_area.COATOOLS2_OT_ToggleAnimationArea,
     version_converter.COATOOLS2_OT_VersionConverter,
+    convert_from_old.COATOOLS2_OT_ConvertOldVersionCoatools,
     change_alpha_mode.COATOOLS2_OT_ChangeAlphaMode,
     change_alpha_mode.COATOOLS2_OT_ChangeTextureInterpolationMode,
     # exporter
@@ -246,7 +252,12 @@ def register():
         bpy.utils.register_class(cls)
 
     # register tools
-    bpy.utils.register_tool(edit_mesh.COATOOLS2_TO_DrawPolygon, after={"builtin.cursor"}, separator=True, group=True)
+    bpy.utils.register_tool(
+        edit_mesh.COATOOLS2_TO_DrawPolygon,
+        after={"builtin.cursor"},
+        separator=True,
+        group=True,
+    )
 
     # register props and keymap
     props.register()
@@ -258,6 +269,7 @@ def register():
     bpy.app.handlers.depsgraph_update_post.append(update_properties)
     bpy.app.handlers.load_post.append(check_view_2D_3D)
     bpy.app.handlers.load_post.append(check_for_deprecated_data)
+    bpy.app.handlers.load_post.append(check_for_old_coatools)
     bpy.app.handlers.load_post.append(set_shading)
 
 
@@ -281,6 +293,7 @@ def unregister():
     bpy.app.handlers.depsgraph_update_post.remove(update_properties)
     bpy.app.handlers.load_post.remove(check_view_2D_3D)
     bpy.app.handlers.load_post.remove(check_for_deprecated_data)
+    bpy.app.handlers.load_post.remove(check_for_old_coatools)
 
 
 @persistent
@@ -288,6 +301,13 @@ def check_for_deprecated_data(dummy):
     for obj in bpy.data.objects:
         if "sprite_object" in obj:
             bpy.context.scene.coa_tools2.deprecated_data_found = True
+
+
+@persistent
+def check_for_old_coatools(dummy):
+    for obj in bpy.data.objects:
+        if "coa_tools" in obj:
+            bpy.context.scene.coa_tools2.old_coatools_found = True
 
 
 @persistent
@@ -329,7 +349,10 @@ def update_properties(scene, depsgraph):
             set_alpha(obj, context, obj_eval.coa_tools2.alpha)
             obj.coa_tools2.alpha_last = obj_eval.coa_tools2.alpha
 
-        if obj_eval.coa_tools2.modulate_color != obj_eval.coa_tools2.modulate_color_last:
+        if (
+            obj_eval.coa_tools2.modulate_color
+            != obj_eval.coa_tools2.modulate_color_last
+        ):
             set_modulate_color(obj, context, obj_eval.coa_tools2.modulate_color)
             obj.coa_tools2.modulate_color_last = obj_eval.coa_tools2.modulate_color
 
