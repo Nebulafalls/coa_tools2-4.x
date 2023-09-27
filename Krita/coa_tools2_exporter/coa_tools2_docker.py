@@ -234,7 +234,7 @@ class COATools2Docker(DockWidget):
         ### paste pixel data into layer of new document
         newNode = newDoc.rootNode().childNodes()[0]
         newNode.setPixelData(
-            pixelData, 0.0, 0.0, node.bounds().width(), node.bounds().height()
+            pixelData, 0, 0, node.bounds().width(), node.bounds().height()
         )
         newNode.setOpacity(255)
         newDoc.refreshProjection()
