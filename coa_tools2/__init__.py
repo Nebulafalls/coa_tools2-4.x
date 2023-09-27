@@ -120,6 +120,11 @@ class COATools2Preferences(bpy.types.AddonPreferences):
         min=0,
         max=59,
     )
+    sprite_import_export_scale: bpy.props.FloatProperty(
+        name="Scale",
+        description="Import/Export scale factor, 1 px = X units",
+        default=0.01,
+    )
 
     def draw(self, context):
         layout = self.layout
