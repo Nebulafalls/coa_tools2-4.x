@@ -207,7 +207,7 @@ class COATools2Docker(DockWidget):
         ### write json data
         jsonPath = os.path.join(exportPath, coaObjectName + ".json")
         jsonFile = json.dumps(jsonData, indent="\t", sort_keys=False)
-        textFile = open(jsonPath, "w")
+        textFile = open(jsonPath, "w", encoding="utf-8")
         textFile.write(jsonFile)
         textFile.close()
 
