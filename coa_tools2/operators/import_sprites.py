@@ -402,6 +402,7 @@ class COATOOLS2_OT_ImportSprite(bpy.types.Operator):
                 output_node = node
         # create all required nodes and connect them
         tex_node = node_tree.nodes.new("ShaderNodeTexImage")
+        tex_node.extension = "CLIP"
         tex_node.interpolation = "Closest"
         tex_node.image = bpy.data.images[name]
 
