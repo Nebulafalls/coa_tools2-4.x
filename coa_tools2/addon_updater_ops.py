@@ -150,13 +150,14 @@ class addon_updater_check_now(bpy.types.Operator):
 
         # apply the UI settings
         settings = context.preferences.addons[__package__].preferences
-        updater.set_check_interval(enable=settings.auto_check_update,
-                    months=settings.updater_intrval_months,
-                    days=settings.updater_intrval_days,
-                    hours=settings.updater_intrval_hours,
-                    minutes=settings.updater_intrval_minutes
-                    ) # optional, if auto_check_update 
-        
+        updater.set_check_interval(
+            enable=settings.auto_check_update and settings.enable_updater,
+            months=settings.updater_intrval_months,
+            days=settings.updater_intrval_days,
+            hours=settings.updater_intrval_hours,
+            minutes=settings.updater_intrval_minutes,
+        )  # optional, if auto_check_update
+
         # input is an optional callback function
         # this function should take a bool input, if true: update ready
         # if false, no update ready
@@ -623,13 +624,14 @@ def check_for_update_background():
     if not addon_prefs:
         return
     settings = addon_prefs.preferences
-    updater.set_check_interval(enable=settings.auto_check_update,
-                months=settings.updater_intrval_months,
-                days=settings.updater_intrval_days,
-                hours=settings.updater_intrval_hours,
-                minutes=settings.updater_intrval_minutes
-                ) # optional, if auto_check_update 
-    
+    updater.set_check_interval(
+        enable=settings.auto_check_update and settings.enable_updater,
+        months=settings.updater_intrval_months,
+        days=settings.updater_intrval_days,
+        hours=settings.updater_intrval_hours,
+        minutes=settings.updater_intrval_minutes,
+    )  # optional, if auto_check_update
+
     # input is an optional callback function
     # this function should take a bool input, if true: update ready
     # if false, no update ready
@@ -651,12 +653,13 @@ def check_for_update_nonthreaded(self, context):
     # should be the async wrapper call here
 
     settings = context.preferences.addons[__package__].preferences
-    updater.set_check_interval(enable=settings.auto_check_update,
-                months=settings.updater_intrval_months,
-                days=settings.updater_intrval_days,
-                hours=settings.updater_intrval_hours,
-                minutes=settings.updater_intrval_minutes
-                ) # optional, if auto_check_update 
+    updater.set_check_interval(
+        enable=settings.auto_check_update and settings.enable_updater,
+        months=settings.updater_intrval_months,
+        days=settings.updater_intrval_days,
+        hours=settings.updater_intrval_hours,
+        minutes=settings.updater_intrval_minutes,
+    )  # optional, if auto_check_update
 
     (update_ready, version, link) = updater.check_for_update(now=False)
     if update_ready == True:
