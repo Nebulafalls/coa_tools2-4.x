@@ -84,10 +84,15 @@ import traceback
 class COATools2Preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
+    enable_updater: bpy.props.BoolProperty(
+        name="Enable Updater",
+        description="If enabled, an update notification will appear when a new version is available",
+        default=True,
+    )
     auto_check_update: bpy.props.BoolProperty(
         name="Auto-check for Update",
         description="If enabled, auto-check for updates using an interval",
-        default=True,
+        default=False,
     )
     updater_intrval_months: bpy.props.IntProperty(
         name="Months",
@@ -125,7 +130,12 @@ class COATools2Preferences(bpy.types.AddonPreferences):
         layout = self.layout
         layout.prop(self, "sprite_import_export_scale")
 
-        addon_updater_ops.update_settings_ui(self, context)
+        row = layout.row(align=True)
+        row.prop(self, "enable_updater")
+        row.prop(self, "auto_check_update", text="Auto-check for Update")
+
+        if self.enable_updater:
+            addon_updater_ops.update_settings_ui(self, context)
 
 
 classes = (
@@ -251,7 +261,12 @@ def register():
         bpy.utils.register_class(cls)
 
     # register tools
-    bpy.utils.register_tool(edit_mesh.COATOOLS2_TO_DrawPolygon, after={"builtin.cursor"}, separator=True, group=True)
+    bpy.utils.register_tool(
+        edit_mesh.COATOOLS2_TO_DrawPolygon,
+        after={"builtin.cursor"},
+        separator=True,
+        group=True,
+    )
 
     # register props and keymap
     props.register()
@@ -334,7 +349,10 @@ def update_properties(scene, depsgraph):
             set_alpha(obj, context, obj_eval.coa_tools2.alpha)
             obj.coa_tools2.alpha_last = obj_eval.coa_tools2.alpha
 
-        if obj_eval.coa_tools2.modulate_color != obj_eval.coa_tools2.modulate_color_last:
+        if (
+            obj_eval.coa_tools2.modulate_color
+            != obj_eval.coa_tools2.modulate_color_last
+        ):
             set_modulate_color(obj, context, obj_eval.coa_tools2.modulate_color)
             obj.coa_tools2.modulate_color_last = obj_eval.coa_tools2.modulate_color
 
