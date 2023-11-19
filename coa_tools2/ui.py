@@ -74,7 +74,7 @@ class COATOOLS2_PT_Info(bpy.types.Panel):
     bl_label = "Info Panel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "COA Tools"
+    bl_category = "COA Tools2"
 
     @classmethod
     def poll(cls, context):
@@ -83,7 +83,7 @@ class COATOOLS2_PT_Info(bpy.types.Panel):
             and addon_updater_ops.updater.json["ignore"] == False
         ):
             return context
-        if context.scene.coa_tools2.deprecated_data_found:
+        if context.scene.coa_tools2.deprecated_data_found or context.scene.coa_tools2.old_coatools_found:
             return context
         if (
             context.space_data.shading.type != "RENDERED"
@@ -132,7 +132,7 @@ class COATOOLS2_PT_ObjectProperties(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_label = "Object Properties"
-    bl_category = "COA Tools"
+    bl_category = "COA Tools2"
 
     @classmethod
     def poll(cls, context):
@@ -425,7 +425,7 @@ class COATOOLS2_PT_Tools(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_label = "Cutout Tools"
-    bl_category = "COA Tools"
+    bl_category = "COA Tools2"
 
     bpy.types.WindowManager.coa_show_help: BoolProperty(
         default=False, description="Hide Help"
@@ -994,7 +994,7 @@ class COATOOLS2_PT_Collections(bpy.types.Panel):
     bl_label = "Cutout Animations"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "COA Tools"
+    bl_category = "COA Tools2"
 
     @classmethod
     def poll(cls, context):
