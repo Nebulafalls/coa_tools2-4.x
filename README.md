@@ -59,6 +59,25 @@ Zip the coa_folder.
 Go to File -> User Preferences -> Add-ons and click the “Install from file...” button.
 This will install and enable the Addon for Blender. Don’t forget to save the user preferences, otherwise the addon will not be activated after restart.
 
+#### Krita PLugin
+
+Referenced from [here](https://docs.krita.org/en/user_manual/python_scripting/install_custom_python_plugin.html)
+
+1. Download plugins from [releases page](https://github.com/Aodaruma/coa_tools2/releases) or [master branch zip](https://github.com/Aodaruma/coa_tools2/archive/refs/heads/master.zip) and unzip it.
+2. Copy all content from the `/Krita` directory into these directories:
+    - Windows: `%APPDATA%\krita\pykrita`
+    - Linux: `$HOME/.local/share/krita/pykrita`
+    - MacOS: `$HOME/Library/Application Support/krita/pykrita`
+3. Open Krita.
+4. Go to `Settings` -> `Configure Krita`.
+5. Access the `Python Plugin Manager`.
+6. Enable the `COA Tools Exporter` plugin.
+7. Once the plugin is activated, go to `Settings` -> `Dockers`.
+8. Enable the `COA Tools Exporter` docker.
+
+To use the plugin select all the layers that should be exported, select export path, export name and press
+Export Selected Sprites button.
+
 ## Development
 
 The source code for development is in the main branch. `coa_tools2` folder is a main body of the add-on. For efficient development, you can create a link to that folder in the Blender `addons` folder.
