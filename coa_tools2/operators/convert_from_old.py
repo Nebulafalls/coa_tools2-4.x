@@ -81,6 +81,10 @@ class COATOOLS2_OT_ConvertOldVersionCoatools(bpy.types.Operator):
                 # convert armature
                 self.change_customdata_name(context, obj)
 
+        if "coa_tools" in context.scene:
+            context.scene["coa_tools2"] = context.scene["coa_tools"]
+            del context.scene["coa_tools"]
+
         # finish
         self.report(
             {"INFO"}, "Convert All sprites from old version COA Tools is finished."
