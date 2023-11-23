@@ -53,7 +53,10 @@ def set_active_tool(self, context, tool_name):
             override = bpy.context.copy()
             override["space_data"] = area.spaces[0]
             override["area"] = area
-            bpy.ops.wm.tool_set_by_id(override, name=tool_name)
+            if b_version_smaller_than((4, 0, 0)):
+                bpy.ops.wm.tool_set_by_id(override_context=override, name=tool_name)
+            else:
+                bpy.ops.wm.tool_set_by_id(name=tool_name)
 
 
 def link_object(context, obj):
@@ -605,10 +608,16 @@ def set_local_view(local):
             override["area"] = area
             if local:
                 if area.spaces.active.local_view == None:
-                    bpy.ops.view3d.localview(override)
+                    if b_version_smaller_than((4, 0, 0)):
+                        bpy.ops.view3d.localview(override)
+                    else:
+                        bpy.ops.view3d.localview()
             else:
                 if area.spaces.active.local_view != None:
-                    bpy.ops.view3d.localview(override)
+                    if b_version_smaller_than((4, 0, 0)):
+                        bpy.ops.view3d.localview(override)
+                    else:
+                        bpy.ops.view3d.localview()
 
 
 def actions_callback(self, context):
@@ -1125,7 +1134,10 @@ def draw_children(
                 current_display_item += 1
                 if in_range or context.scene.coa_tools2.display_all or name_found:
                     if (
-                        (sprite_object.coa_tools2.favorite and child.coa_tools2.favorite)
+                        (
+                            sprite_object.coa_tools2.favorite
+                            and child.coa_tools2.favorite
+                        )
                         or not sprite_object.coa_tools2.favorite
                         or (child.type == "ARMATURE" and (favorite_bones(child)))
                     ):
