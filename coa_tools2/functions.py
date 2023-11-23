@@ -1134,7 +1134,10 @@ def draw_children(
                 current_display_item += 1
                 if in_range or context.scene.coa_tools2.display_all or name_found:
                     if (
-                        (sprite_object.coa_tools2.favorite and child.coa_tools2.favorite)
+                        (
+                            sprite_object.coa_tools2.favorite
+                            and child.coa_tools2.favorite
+                        )
                         or not sprite_object.coa_tools2.favorite
                         or (child.type == "ARMATURE" and (favorite_bones(child)))
                     ):
