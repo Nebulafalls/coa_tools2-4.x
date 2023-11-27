@@ -711,12 +711,21 @@ def assign_tex_to_uv(image, uv):
 
 def set_bone_group(self, armature, pose_bone, group="ik_group", theme="THEME09"):
     new_group = None
-    if group not in armature.pose.bone_groups:
-        new_group = armature.pose.bone_groups.new(name=group)
-        new_group.color_set = theme
+    if b_version_smaller_than((4, 0, 0)):
+        if group not in armature.pose.bone_groups:
+            new_group = armature.pose.bone_groups.new(name=group)
+            new_group.color_set = theme
+        else:
+            new_group = armature.pose.bone_groups[group]
+        pose_bone.bone_group = new_group
     else:
-        new_group = armature.pose.bone_groups[group]
-    pose_bone.bone_group = new_group
+        armature: bpy.types.Armature = armature.data
+        if group not in [c.name for c in armature.collections]:
+            new_collection = armature.collections.new(name=group)
+        else:
+            new_collection = armature.pose.bone_groups[group]
+        new_collection.assign(pose_bone.bone)
+        pose_bone.bone.color.pallete = theme
 
 
 last_sprite_object = None
