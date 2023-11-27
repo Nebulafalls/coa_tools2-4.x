@@ -261,8 +261,8 @@ class COATOOLS2_OT_QuickArmature(bpy.types.Operator):
             armature.data.edit_bones.active = bone
             self.current_bone = bone
             self.create_default_bone_group(armature)
-            # if not functions.b_version_smaller_than((4, 0, 0)):
-            #     bone.color = (0.461840, 0.852381, 1.000000, 1.000000)
+            if not functions.b_version_smaller_than((4, 0, 0)):
+                bone.color.palette = "THEME08"
 
     def drag_bone(self, context, event, bone=None):
         ### math.atan2(0.5, 0.5)*180/math.pi
