@@ -54,7 +54,7 @@ def set_active_tool(self, context, tool_name):
             override["space_data"] = area.spaces[0]
             override["area"] = area
             if b_version_smaller_than((4, 0, 0)):
-                bpy.ops.wm.tool_set_by_id(override_context=override, name=tool_name)
+                bpy.ops.wm.tool_set_by_id(override, name=tool_name)
             else:
                 bpy.ops.wm.tool_set_by_id(name=tool_name)
 
