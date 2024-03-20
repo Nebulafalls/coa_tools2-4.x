@@ -107,7 +107,9 @@ class COATOOLS2_OT_EditWeights(bpy.types.Operator):
         armature.hide_viewport = False
         bpy.ops.object.mode_set(mode="OBJECT")
         for i, bone_layer in enumerate(BONE_LAYERS):
-            armature.data.layers[i] = bone_layer
+            armature.data.collections[i].is_visible = bone_layer
+            ##bone.assign(bone_layer)
+            ###armature.data.layers[i] = bone_layer
 
         for name in self.selected_object_names:
             obj = bpy.data.objects[name]
@@ -234,9 +236,9 @@ class COATOOLS2_OT_EditWeights(bpy.types.Operator):
             self.armature_set_mode(context, "POSE", True)
             global BONE_LAYERS
             BONE_LAYERS = []
-            for i, bone_layer in enumerate(armature.data.layers):
-                BONE_LAYERS.append(bool(bone_layer))
-                armature.data.layers[i] = True
+            for i, bone_layer in enumerate(armature.data.collections):
+                BONE_LAYERS.append(bone_layer.is_visible )
+                armature.data.collections[i].is_visible = True
             self.select_bone()
 
         sprite = context.active_object

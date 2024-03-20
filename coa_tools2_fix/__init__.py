@@ -19,7 +19,7 @@ Created by Aodaruma
 """
 
 bl_info = {
-    "name": "COA Tools2",
+    "name": "COA Tools2_fix",
     "description": "This Addon provides a Toolset for a 2D Animation Workflow.",
     "author": "Aodaruma",
     "version": (1, 0, 0),
