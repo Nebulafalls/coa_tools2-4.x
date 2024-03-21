@@ -291,7 +291,7 @@ class COATOOLS2_OT_EditWeights(bpy.types.Operator):
         line_width=2,
         point_size=None,
     ):  # draw_types -> LINE_STRIP, LINES, POINTS
-        bgl.glLineWidth(line_width)
+        #bgl.glLineWidth(line_width)
         if point_size != None:
             bgl.glPointSize(point_size)
         bgl.glEnable(bgl.GL_BLEND)
