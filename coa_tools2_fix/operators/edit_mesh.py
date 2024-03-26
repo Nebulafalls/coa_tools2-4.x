@@ -1656,7 +1656,7 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
         coords=[],
         color=(1.0, 1.0, 1.0, 1.0),
         draw_type="LINE_STRIP",
-        shader_type="2D_UNIFORM_COLOR",
+        shader_type="UNIFORM_COLOR",
         line_width=2,
         point_size=None,
     ):  # draw_types -> LINE_STRIP, LINES, POINTS

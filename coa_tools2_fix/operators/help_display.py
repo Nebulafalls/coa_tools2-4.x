@@ -101,7 +101,7 @@ class COATOOLS2_OT_ShowHelp(bpy.types.Operator):
         
         return {"FINISHED"}
 
-    def draw_coords(self, coords=[], color=[(1.0, 1.0, 1.0, 1.0)], draw_type="LINE_STRIP", shader_type="2D_UNIFORM_COLOR", line_width=2, point_size=None):  # draw_types -> LINE_STRIP, LINES, POINTS
+    def draw_coords(self, coords=[], color=[(1.0, 1.0, 1.0, 1.0)], draw_type="LINE_STRIP", shader_type="UNIFORM_COLOR", line_width=2, point_size=None):  # draw_types -> LINE_STRIP, LINES, POINTS
         gpu.state.line_width_set(line_width)
         if point_size != None:
             gpu.state.point_size_set(point_size)
