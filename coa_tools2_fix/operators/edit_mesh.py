@@ -1660,11 +1660,11 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
         line_width=2,
         point_size=None,
     ):  # draw_types -> LINE_STRIP, LINES, POINTS
-        bgl.glLineWidth(line_width)
+        gpu.state.line_width_set(line_width)
         if point_size != None:
-            bgl.glPointSize(point_size)
-        bgl.glEnable(bgl.GL_BLEND)
-        bgl.glEnable(bgl.GL_LINE_SMOOTH)
+            gpu.state.point_size_set(point_size)
+        ##bgl.glEnable(bgl.GL_BLEND)
+        ##bgl.glEnable(bgl.GL_LINE_SMOOTH)
 
         shader = gpu.shader.from_builtin(shader_type)
         batch = batch_for_shader(shader, draw_type, {"pos": coords})
@@ -1672,8 +1672,8 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
         shader.uniform_float("color", color)
         batch.draw(shader)
 
-        bgl.glDisable(bgl.GL_BLEND)
-        bgl.glDisable(bgl.GL_LINE_SMOOTH)
+        ##bgl.glDisable(bgl.GL_BLEND)
+        ##bgl.glDisable(bgl.GL_LINE_SMOOTH)
         return shader
 
     def coord_3d_to_2d(self, coord):

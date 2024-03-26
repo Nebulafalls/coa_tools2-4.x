@@ -102,11 +102,11 @@ class COATOOLS2_OT_ShowHelp(bpy.types.Operator):
         return {"FINISHED"}
 
     def draw_coords(self, coords=[], color=[(1.0, 1.0, 1.0, 1.0)], draw_type="LINE_STRIP", shader_type="2D_UNIFORM_COLOR", line_width=2, point_size=None):  # draw_types -> LINE_STRIP, LINES, POINTS
-        bgl.glLineWidth(line_width)
+        gpu.state.line_width_set(line_width)
         if point_size != None:
-            bgl.glPointSize(point_size)
-        bgl.glEnable(bgl.GL_BLEND)
-        bgl.glEnable(bgl.GL_LINE_SMOOTH)
+            gpu.state.point_size_set(point_size)
+        ##bgl.glEnable(bgl.GL_BLEND)
+        ##bgl.glEnable(bgl.GL_LINE_SMOOTH)
 
         shader = gpu.shader.from_builtin(shader_type)
         batch = batch_for_shader(shader, draw_type, {"pos": coords, "color":color})
@@ -114,8 +114,8 @@ class COATOOLS2_OT_ShowHelp(bpy.types.Operator):
         # shader.uniform_float("color", color)
         batch.draw(shader)
 
-        bgl.glDisable(bgl.GL_BLEND)
-        bgl.glDisable(bgl.GL_LINE_SMOOTH)
+        ##bgl.glDisable(bgl.GL_BLEND)
+        ##bgl.glDisable(bgl.GL_LINE_SMOOTH)
         return shader
 
     def draw_callback_px(self):
