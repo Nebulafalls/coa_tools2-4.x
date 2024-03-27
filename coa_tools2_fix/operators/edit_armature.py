@@ -846,8 +846,8 @@ class COATOOLS2_OT_SetIK(bpy.types.Operator):
                 context.active_object.data.bones[bone.name].layers[1] = True
                 context.active_object.data.bones[bone.name].layers[0] = False
             else:
-                context.active_object.data.bones[bone.name].collections[1].is_visible = True
-                context.active_object.data.bones[bone.name].collections[0].is_visible = False
+                ##context.active_object.data.bones[bone.name].collections[1].is_visible = True
+                ##context.active_object.data.bones[bone.name].collections[0].is_visible = False
             
 
         bpy.ops.ed.undo_push(message="Set Ik")
