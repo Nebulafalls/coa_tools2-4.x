@@ -127,8 +127,8 @@ class COATools2Preferences(bpy.types.AddonPreferences):
         default=0.01,
     )
     dpi_scale: bpy.props.FloatProperty(
-        name="dpi缩放",
-        description="高dpi缩放",
+        name="编辑网格点dpi缩放",
+        description="编辑网格模式下的点的dpi缩放",
         default=1.00,
     )
 
