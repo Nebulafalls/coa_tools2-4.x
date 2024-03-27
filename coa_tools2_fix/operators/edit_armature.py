@@ -766,12 +766,18 @@ class COATOOLS2_OT_SetIK(bpy.types.Operator):
     def invoke(self, context, event):
         wm = context.window_manager
         return wm.invoke_props_dialog(self)
+    
+    def b_version_smaller_than(version):
+            if bpy.app.version < version:
+                return True
+            else:
+                return False
+
+
+
 
     def execute(self, context):
-        if b_version_smaller_than((4, 0, 0)):
-            bone = context.active_object.pose.bones[context.active_pose_bone.name]
-        else:
-            bone = context.active_object.data.collections[context.active_pose_bone.name]
+        bone = context.active_object.pose.bones[context.active_pose_bone.name]
         bone2 = context.selected_pose_bones[0]
         ik_bone = None
         if self.replace_bone:
@@ -836,11 +842,17 @@ class COATOOLS2_OT_SetIK(bpy.types.Operator):
             copy_rot_const = bone.constraints.new("COPY_ROTATION")
             copy_rot_const.target = context.active_object
             copy_rot_const.subtarget = ik_target_name
-            context.active_object.data.bones[bone.name].layers[1] = True
-            context.active_object.data.bones[bone.name].layers[0] = False
+            if b_version_smaller_than((4, 0, 0)):
+                context.active_object.data.bones[bone.name].layers[1] = True
+                context.active_object.data.bones[bone.name].layers[0] = False
+            else:
+                context.active_object.data.bones[bone.name].collections[1].is_visible = True
+                context.active_object.data.bones[bone.name].collections[0].is_visible = False
+            
 
         bpy.ops.ed.undo_push(message="Set Ik")
         return {"FINISHED"}
+
 
 
 class COATOOLS2_OT_CreateStretchIK(bpy.types.Operator):

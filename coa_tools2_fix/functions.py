@@ -721,9 +721,9 @@ def set_bone_group(self, armature, pose_bone, group="ik_group", theme="THEME09")
         if group not in [c.name for c in armature.collections]:
             new_collection = armature.collections.new(name=group)
         else:
-            new_collection = armature.data.collections[group]
+            new_collection = armature.collections[group]
         new_collection.assign(pose_bone.bone)
-        pose_bone.bone.color.pallete = theme
+        pose_bone.bone.color.palette = theme
 
 
 last_sprite_object = None
