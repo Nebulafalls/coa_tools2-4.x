@@ -49,6 +49,13 @@ import pdb
 
 
 ######################################################################################################################################### Grid Fill
+                    
+def get_addon_prefs(context):
+    addon_name = __name__.split(".")[0]
+    user_preferences = context.preferences
+    addon_prefs = user_preferences.addons[addon_name].preferences
+    return addon_prefs
+
 def collapse_short_edges(bm, obj, threshold=1.0):
     ### collapse short edges
     edges_len_average = 0
@@ -1682,6 +1689,9 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
         coord_2d = bpy_extras.view3d_utils.location_3d_to_region_2d(region, rv3d, coord)
         return coord_2d
 
+
+
+
     def draw_callback_px(self):
         obj = bpy.context.active_object
 
@@ -1760,7 +1770,7 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
                         self.draw_coords(coords=[p1, p2], color=color)
                     else:
                         color = yellow
-
+                    
                     # draw point
                     self.draw_coords(
                         coords=[self.coord_3d_to_2d(vertex_vec_new)],

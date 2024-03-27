@@ -126,10 +126,16 @@ class COATools2Preferences(bpy.types.AddonPreferences):
         description="Import/Export scale factor, 1 px = X units",
         default=0.01,
     )
+    dpi_scale: bpy.props.FloatProperty(
+        name="dpi缩放",
+        description="高dpi缩放",
+        default=1.00,
+    )
 
     def draw(self, context):
         layout = self.layout
         layout.prop(self, "sprite_import_export_scale")
+        layout.prop(self, "dpi_scale")
 
         row = layout.row(align=True)
         row.prop(self, "enable_updater")
