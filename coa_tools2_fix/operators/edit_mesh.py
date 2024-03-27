@@ -51,7 +51,7 @@ import pdb
 ######################################################################################################################################### Grid Fill
                     
 def get_addon_prefs(context):
-    addon_name = __name__.split(".")[0]
+    addon_name = "coa_tools2_fix".split(".")[0]
     user_preferences = context.preferences
     addon_prefs = user_preferences.addons[addon_name].preferences
     return addon_prefs
@@ -1776,7 +1776,7 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
                         coords=[self.coord_3d_to_2d(vertex_vec_new)],
                         color=color,
                         draw_type=CONSTANTS.DRAW_POINTS,
-                        point_size=8,
+                        point_size=8*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                     )
                     # draw intersecting edge points
                     color = yellow
@@ -1787,13 +1787,13 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
                         coords=points,
                         color=[0, 0, 0, 1],
                         draw_type=CONSTANTS.DRAW_POINTS,
-                        point_size=8,
+                        point_size=8*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                     )
                     self.draw_coords(
                         coords=points,
                         color=[1, 0, 0.5, 1],
                         draw_type=CONSTANTS.DRAW_POINTS,
-                        point_size=6,
+                        point_size=6*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                     )
 
                 # draw single vertices
@@ -1828,46 +1828,46 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
                                     coords=verts_loose,
                                     color=[1, 1, 1, 1],
                                     draw_type=CONSTANTS.DRAW_POINTS,
-                                    point_size=8,
+                                    point_size=8*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                                 )
 
                 self.draw_coords(
                     coords=verts_selected,
                     color=[0, 0, 0, 1],
                     draw_type=CONSTANTS.DRAW_POINTS,
-                    point_size=4,
+                    point_size=4*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                 )
                 self.draw_coords(
                     coords=verts_selected,
                     color=[1, 0, 0.5, 1],
                     draw_type=CONSTANTS.DRAW_POINTS,
-                    point_size=2,
+                    point_size=2*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                 )
 
                 self.draw_coords(
                     coords=verts,
                     color=[0, 0, 0, 1],
                     draw_type=CONSTANTS.DRAW_POINTS,
-                    point_size=6,
+                    point_size=6*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                 )
                 self.draw_coords(
                     coords=verts,
                     color=[0, 1, 0.5, 1],
                     draw_type=CONSTANTS.DRAW_POINTS,
-                    point_size=4,
+                    point_size=4*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                 )
 
                 self.draw_coords(
                     coords=verts_loose,
                     color=[1, 0, 0, 1],
                     draw_type=CONSTANTS.DRAW_POINTS,
-                    point_size=8,
+                    point_size=8*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                 )
                 self.draw_coords(
                     coords=verts_loose_selected,
                     color=[1, 0.8, 0.8, 1],
                     draw_type=CONSTANTS.DRAW_POINTS,
-                    point_size=8,
+                    point_size=8*bpy.context.preferences.addons["coa_tools2_fix"].preferences.dpi_scale,
                 )
 
 
