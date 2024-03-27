@@ -215,7 +215,7 @@ class COATOOLS2_OT_QuickArmature(bpy.types.Operator):
                 default_bone_group = armature.collections.new(name="default_bones")
                 # default_bone_group.color_set = "THEME08"
             else:
-                default_bone_group = armature.collections["default_bones"]
+                default_bone_group = armature.data.collections["default_bones"]
         return default_bone_group
 
     def create_bones(self, context, armature):
@@ -649,6 +649,12 @@ class COATOOLS2_OT_QuickArmature(bpy.types.Operator):
         # draw_edit_mode(self,bpy.context,color=[0.461840, 0.852381, 1.000000, 1.000000],text="Edit Armature Mode",offset=0)
 
 
+def b_version_smaller_than(version):
+    if bpy.app.version < version:
+        return True
+    else:
+        return False
+    
 ######################################################################################################################################### Set Stretch To Constraint
 class COATOOLS2_OT_SetStretchBone(bpy.types.Operator):
     bl_idname = "coa_tools2.set_stretch_bone"
@@ -762,7 +768,10 @@ class COATOOLS2_OT_SetIK(bpy.types.Operator):
         return wm.invoke_props_dialog(self)
 
     def execute(self, context):
-        bone = context.active_object.pose.bones[context.active_pose_bone.name]
+        if b_version_smaller_than((4, 0, 0)):
+            bone = context.active_object.pose.bones[context.active_pose_bone.name]
+        else:
+            bone = context.active_object.data.collections[context.active_pose_bone.name]
         bone2 = context.selected_pose_bones[0]
         ik_bone = None
         if self.replace_bone:
