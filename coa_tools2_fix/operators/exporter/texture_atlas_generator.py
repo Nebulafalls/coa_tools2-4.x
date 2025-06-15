@@ -262,7 +262,7 @@ class TextureAtlasGenerator:
 
     @staticmethod
     def generate_uv_layout(name="texture_atlas", objects=None, width=256, height=256, max_width=2048, max_height=2048,
-                           margin=1, texture_bleed=0, square=True, output_scale=1.0):
+                      margin=1, texture_bleed=0, square=True, output_scale=1.0):
         context = bpy.context
 
         ### Create new Collection for Rendering
@@ -279,20 +279,16 @@ class TextureAtlasGenerator:
         ### Extract texture data from given objects. Gives texture width, height and boundaries
         texture_data_list = TextureAtlasGenerator.get_sorted_texture_data(objects, output_scale)
 
-
         ### Generates Atlas data which is later used to create uv data
         atlas_data = TextureAtlasGenerator.create_texture_atlas_data(texture_data_list, name, width, height, max_width,
-                                                                     max_height, margin, square, output_scale)
+                                                                    max_height, margin, square, output_scale)
 
         ### create new object with atlas uv layout
         slot_len = 0
         uv_objs = []
         atlas_objs = []
         for slot in atlas_data.texture_slots:
-            # if slot.texture_data != None and slot.texture_data.img_name == None:
-            #     obj = slot.texture_data.texture_object
-            #     uv_objs.append(obj)
-            if slot.texture_data != None:# and slot.texture_data.img_name != None:
+            if slot.texture_data != None:
                 slot_len += 1
                 obj = slot.texture_data.texture_object
                 uv_objs.append(obj)
@@ -323,6 +319,13 @@ class TextureAtlasGenerator:
                 # copy atlas objects and position them properly for rendering
                 atlas_obj = obj.copy()
                 atlas_obj.data = atlas_obj.data.copy()
+                
+                # 重置所有形态键值为0
+                if atlas_obj.data.shape_keys is not None:
+                    for key_block in atlas_obj.data.shape_keys.key_blocks:
+                        if key_block != atlas_obj.data.shape_keys.reference_key:
+                            key_block.value = 0.0
+                
                 render_collection.objects.link(atlas_obj)
                 atlas_objs.append(atlas_obj)
                 atlas_obj.coa_tools2.driver_remove("alpha")
@@ -336,8 +339,6 @@ class TextureAtlasGenerator:
                 x = math.inf
                 y = -math.inf
                 verts = atlas_obj.data.vertices
-                if atlas_obj.data.shape_keys is not None and len(atlas_obj.data.shape_keys.key_blocks) > 0:
-                    verts = atlas_obj.data.shape_keys.key_blocks[0].data
                 for vert in verts:
                     if vert.co[0] < x:
                         x = vert.co[0]
@@ -357,12 +358,12 @@ class TextureAtlasGenerator:
         cam.location[1] = -10
         cam.rotation_euler[0] = math.pi * .5
         cam.data.ortho_scale = max(atlas_data.width, atlas_data.height)
-        context.scene.render.image_settings.compression = 0#85
+        context.scene.render.image_settings.compression = 0
         context.scene.render.resolution_x = atlas_data.width
         context.scene.eevee.taa_render_samples = 16
         context.scene.render.resolution_y = atlas_data.height
         context.scene.render.film_transparent = True
-        context.scene.render.engine = "BLENDER_EEVEE"
+        context.scene.render.engine = "BLENDER_EEVEE_NEXT"
         context.scene.render.filter_size = 1.0
         context.scene.camera = cam
         context.scene.world.color = [0, 0, 0]
@@ -390,6 +391,5 @@ class TextureAtlasGenerator:
             bpy.data.collections["COA Export Collection"].hide_render = False
 
         return atlas_img, merged_uv_obj, atlas_data
-
 
 # TextureAtlasGenerator.generate_uv_layout(name="texture_atlas", objects=bpy.context.selected_objects, width=256,height=256, max_width=1024, max_height=1024, margin=1, texture_bleed=0,square=True, output_scale=1.0)

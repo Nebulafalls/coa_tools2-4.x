@@ -61,6 +61,7 @@ def set_active_tool(self, context, tool_name):
 
 def link_object(context, obj):
     active_collection = bpy.data.collections[context.scene.coa_tools2.active_collection]
+    
     active_collection.objects.link(obj)
     return obj
 

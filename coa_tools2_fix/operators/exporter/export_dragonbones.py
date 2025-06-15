@@ -1631,6 +1631,7 @@ class COATOOLS2_OT_DragonBonesExport(bpy.types.Operator):
         return True
 
     def __init__(self):
+        
         self.reduce_size = bpy.context.scene.coa_tools2.minify_json
         self.sprite_scale = bpy.context.scene.coa_tools2.sprite_scale
 
