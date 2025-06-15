@@ -22,7 +22,7 @@ bl_info = {
     "name": "COA Tools2_fix",
     "description": "This Addon provides a Toolset for a 2D Animation Workflow.",
     "author": "Aodaruma",
-    "version": (1, 0, 0),
+    "version": (2, 5, 0),
     "blender": (3, 40, 0),
     "location": "View 3D > Tools > Cutout Animation Tools",
     "warning": "",
