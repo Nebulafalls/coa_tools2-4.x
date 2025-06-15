@@ -557,6 +557,10 @@ class COATOOLS2_OT_ImportSprites(bpy.types.Operator, ImportHelper):
     replace: BoolProperty(name="Update Existing", default=True)
 
     def execute(self, context):
+        if len(bpy.context.scene.collection.children) == 0:
+            new_collection = bpy.data.collections.new("Collection")
+            bpy.context.scene.collection.children.link(new_collection)
+            print("集合不存在，已创建")
         sprite_object = functions.get_sprite_object(context.active_object)
 
         context.space_data.shading.type = "RENDERED"

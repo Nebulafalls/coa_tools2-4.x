@@ -58,6 +58,13 @@ class COATOOLS2_OT_CreateSpriteObject(bpy.types.Operator):
             and obj.mode == "POSE"
         ):
             context.view_layer.objects.active = None
+
+        if len(bpy.context.scene.collection.children) == 0:
+            new_collection = bpy.data.collections.new("Collection")
+            bpy.context.scene.collection.children.link(new_collection)
+            bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[new_collection.name]
+
+        
         bpy.ops.object.armature_add(
             radius=1,
             enter_editmode=False,
