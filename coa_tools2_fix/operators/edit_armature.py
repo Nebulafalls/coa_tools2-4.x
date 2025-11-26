@@ -216,61 +216,73 @@ class COATOOLS2_OT_QuickArmature(bpy.types.Operator):
                 default_bone_group = armature.collections.new(name="default_bones")
                 # default_bone_group.color_set = "THEME08"
             else:
-                default_bone_group = armature.data.collections["default_bones"]
+                default_bone_group = armature.collections["default_bones"]
         return default_bone_group
 
     def create_bones(self, context, armature):
-        if armature != None:
-            bpy.ops.object.mode_set(mode="EDIT")
-            bone: bpy.types.EditBone = armature.data.edit_bones.new("Bone")
+        if armature is None or not isinstance(armature.data, bpy.types.Armature):
+            self.report({"ERROR"}, "Invalid Armature object.")
+            return
 
-            ### tag bones that will be locked
-            bone["lock_z"] = True
-            bone["lock_rot"] = True
+        bpy.ops.object.mode_set(mode="EDIT")
+        
+        # 确保 armature.data.edit_bones 可用
+        if not hasattr(armature.data, 'edit_bones'):
+            self.report({"ERROR"}, "Armature data has no edit_bones.")
+            return
 
-            head_position = self.armature.matrix_world.inverted() @ self.mouse_click_vec
-            head_position[1] = 0
-            bone.head = head_position
-            bone.hide = True
-            bone.bbone_x = 0.05
-            bone.bbone_z = 0.05
+        bone: bpy.types.EditBone = armature.data.edit_bones.new("Bone")
 
-            for bone2 in armature.data.edit_bones:
-                bone2.select_head = False
-                bone2.select_tail = False
-                if bone2 != armature.data.edit_bones.active:
-                    bone2.select = False
-            if (
-                armature.data.edit_bones.active != None
-                and armature.data.edit_bones.active.select == True
-            ):
-                active_bone = armature.data.edit_bones.active
-                bone.parent = active_bone
-                bone.name = active_bone.name
-                distance = (
-                    Vector(active_bone.tail.xyz - bone.head.xyz).magnitude
-                    / bpy.context.space_data.region_3d.view_distance
-                )
-                if distance < 0.02:
-                    bone.use_connect = True
-                    active_bone.select_tail = True
-                active_bone.select = False
+        ### tag bones that will be locked
+        bone["lock_z"] = True
+        bone["lock_rot"] = True
 
-            bone.select = True
-            bone.select_head = True
-            bone.select_tail = True
-            armature.data.edit_bones.active = bone
-            self.current_bone = bone
-            self.create_default_bone_group(armature)
-            if not functions.b_version_smaller_than((4, 0, 0)):
-                bone.color.palette = "THEME08"
+        head_position = self.armature.matrix_world.inverted() @ self.mouse_click_vec
+        head_position[1] = 0
+        bone.head = head_position
+        bone.hide = True
+        bone.bbone_x = 0.05
+        bone.bbone_z = 0.05
+
+        for bone2 in armature.data.edit_bones:
+            bone2.select_head = False
+            bone2.select_tail = False
+            if bone2 != armature.data.edit_bones.active:
+                bone2.select = False
+        if (
+            armature.data.edit_bones.active != None
+            and armature.data.edit_bones.active.select == True
+        ):
+            active_bone = armature.data.edit_bones.active
+            bone.parent = active_bone
+            bone.name = f"{active_bone.name}_child"  # Avoid name collision
+            view_distance = bpy.context.space_data.region_3d.view_distance
+            distance_threshold = max(0.02, 0.005 * view_distance)  # Dynamic threshold
+            distance = (
+                Vector(active_bone.tail.xyz - bone.head.xyz).magnitude
+                / view_distance
+            )
+            if distance < distance_threshold:
+                bone.use_connect = True
+                active_bone.select_tail = True
+            active_bone.select = False
+
+        bone.select = True
+        bone.select_head = True
+        bone.select_tail = True
+        armature.data.edit_bones.active = bone
+        self.current_bone = bone
+        self.create_default_bone_group(armature)
+        if not functions.b_version_smaller_than((4, 0, 0)):
+            bone.color.palette = "THEME08"
+        bone.hide = False
 
     def drag_bone(self, context, event, bone=None):
         ### math.atan2(0.5, 0.5)*180/math.pi
         mouse_vec_norm = (self.cursor_location - self.mouse_click_vec).normalized()
         mouse_vec = self.cursor_location - self.mouse_click_vec
         angle = math.atan2(mouse_vec_norm[0], mouse_vec_norm[2]) * 180 / math.pi
-        if bone != None:
+        if bone is not None and isinstance(bone, bpy.types.EditBone):
             bone.hide = False
             cursor_local = self.armature.matrix_world.inverted() @ self.cursor_location
             cursor_local[1] = 0
@@ -1144,4 +1156,40 @@ class COATOOLS2_OT_RemoveStretchIK(bpy.types.Operator):
                         bpy.ops.object.mode_set(mode="EDIT")
         bpy.ops.object.mode_set(mode="POSE")
 
+        return {"FINISHED"}
+
+class COATOOLS2_OT_FlipBoneX(bpy.types.Operator):
+    
+    bl_idname = "coa_tools2.flip_bone_x"
+    bl_label = "Flip Bone X"
+    bl_description = "Flips the X scale of the active bone."
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object and context.active_object.type == "ARMATURE" and context.active_pose_bone
+
+    def execute(self, context):
+        obj = context.active_object
+        
+        # 获取所有选中的骨骼
+        selected_bones = context.selected_pose_bones
+        
+        if not selected_bones:
+            selected_bones = [context.active_pose_bone]
+        
+        for bone in selected_bones:
+            # Flip X scale
+            bone.scale.x *= -1
+            
+            # 插入关键帧并设置插值为常量
+            bone.keyframe_insert("scale")
+            
+            # 设置插值为常量
+            if obj.animation_data and obj.animation_data.action:
+                for fcurve in obj.animation_data.action.fcurves:
+                    if fcurve.data_path == bone.path_from_id() + "\.scale" and fcurve.array_index == 0:
+                        fcurve.extrapolation = 'CONSTANTS'
+
+        self.report({"INFO"}, f"{len(selected_bones)} bone(s) X scale flipped.")
         return {"FINISHED"}

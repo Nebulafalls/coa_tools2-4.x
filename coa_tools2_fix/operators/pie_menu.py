@@ -8,7 +8,7 @@ preview_collections_pie = {}
 
 class COATOOLS2_MT_menu(Menu):
     # label is displayed at the center of the pie menu.
-    bl_label = "COA Tools"
+    bl_label = "COA 工具"
     bl_idname = "COATOOLS2_MT_menu"
     
     @classmethod
@@ -30,31 +30,32 @@ class COATOOLS2_MT_menu(Menu):
         if obj != None and context.area.type == "VIEW_3D":
             #pie.operator_enum("view3d.coa_pie_menu_options", "selected_mode")
             if obj.type == "MESH":
-                pie.operator("coa_tools2.select_frame_thumb",text="Select Frame",icon="IMAGE_RGB")
-                pie.operator("wm.call_menu_pie", icon="KEYTYPE_MOVING_HOLD_VEC", text="Add Keyframe(s)").name = "COATOOLS2_MT_keyframe_menu_add"
-                pie.operator("coa_tools2.edit_weights",text="Edit Weights",icon="MOD_VERTEX_WEIGHT")
-                op = pie.operator("coa_tools2.edit_mesh",text="Edit Mesh",icon="GREASEPENCIL")
+                pie.operator("coa_tools2.select_frame_thumb",text="选择帧",icon="IMAGE_RGB")
+                pie.operator("wm.call_menu_pie", icon="KEYTYPE_MOVING_HOLD_VEC", text="添加关键帧(s)").name = "COATOOLS2_MT_keyframe_menu_add"
+                pie.operator("coa_tools2.edit_weights",text="编辑权重",icon="MOD_VERTEX_WEIGHT")
+                op = pie.operator("coa_tools2.edit_mesh",text="编辑网格",icon="GREASEPENCIL")
                 op.mode = "EDIT_MESH"
-                pie.operator("coa_tools2.quick_armature",text="Edit Armature",icon="ARMATURE_DATA")
-                pie.operator("coa_tools2.edit_shapekey",text="Edit Shapekey",icon="SHAPEKEY_DATA")
+                pie.operator("coa_tools2.quick_armature",text="编辑骨骼",icon="ARMATURE_DATA")
+                pie.operator("coa_tools2.edit_shapekey",text="编辑形状键",icon="SHAPEKEY_DATA")
                 pie.row()    
-                pie.operator("wm.call_menu_pie", icon="HANDLETYPE_ALIGNED_VEC", text="Delete Keyframe(s)").name = "COATOOLS2_MT_keyframe_menu_remove"
+                pie.operator("wm.call_menu_pie", icon="HANDLETYPE_ALIGNED_VEC", text="删除关键帧(s)").name = "COATOOLS2_MT_keyframe_menu_remove"
                 
             elif obj.type == "ARMATURE":
-                pie.operator("coa_tools2.set_ik",text="Create IK Bone",icon="CONSTRAINT_BONE")
-                pie.operator("wm.call_menu_pie", icon="KEYTYPE_MOVING_HOLD_VEC", text="Add Keyframe(s)").name = "COATOOLS2_MT_keyframe_menu_add"
-                pie.operator("coa_tools2.draw_bone_shape",text="Draw Bone Shape",icon="BONE_DATA")
-                pie.operator("coa_tools2.quick_armature",text="Edit Armature",icon="ARMATURE_DATA")
-                pie.operator("coa_tools2.set_stretch_bone",text="Create Stretch Bone",icon="CONSTRAINT_BONE")
-                pie.operator("wm.call_menu_pie", icon="HANDLETYPE_ALIGNED_VEC", text="Delete Keyframe(s)").name = "COATOOLS2_MT_keyframe_menu_remove"
+                pie.operator("coa_tools2.set_ik",text="创建IK骨",icon="CONSTRAINT_BONE")
+                pie.operator("wm.call_menu_pie", icon="KEYTYPE_MOVING_HOLD_VEC", text="添加关键帧(s)").name = "COATOOLS2_MT_keyframe_menu_add"
+                pie.operator("coa_tools2.draw_bone_shape",text="骨骼形状",icon="BONE_DATA")
+                pie.operator("coa_tools2.flip_bone_x",text="翻转骨骼",icon="ARROW_LEFTRIGHT")
+                pie.operator("coa_tools2.quick_armature",text="编辑骨骼",icon="ARMATURE_DATA")
+                pie.operator("coa_tools2.set_stretch_bone",text="创建拉伸骨",icon="CONSTRAINT_BONE")
+                pie.operator("wm.call_menu_pie", icon="HANDLETYPE_ALIGNED_VEC", text="删除关键帧").name = "COATOOLS2_MT_keyframe_menu_remove"
             elif obj.type == "EMPTY":
-                pie.operator("import.coa_import_sprites",text="Import Sprites",icon="FILEBROWSER")
+                pie.operator("import.coa_import_sprites",text="导入精灵",icon="FILEBROWSER")
                 if get_addon_prefs(context).dragon_bones_export:
-                    pie.operator("coa_tools2.export_dragon_bones",text="Export Dragonbones",icon_value=db_icon.icon_id)
+                    pie.operator("coa_tools2.export_dragon_bones",text="导出 Dragonbones",icon_value=db_icon.icon_id)
                 else:
                     pie.row()    
-                pie.operator("wm.coa_create_ortho_cam",text="Create Ortho Camera",icon="CAMERA_DATA")
-                pie.operator("coa_tools2.batch_render",text="Batch Render Animations",icon="CLIP")
+                pie.operator("wm.coa_create_ortho_cam",text="创建正交相机",icon="CAMERA_DATA")
+                pie.operator("coa_tools2.batch_render",text="批量渲染动画",icon="CLIP")
 
 class COATOOLS2_MT_keyframe_menu_01(Menu):
     # label is displayed at the center of the pie menu.

@@ -194,6 +194,7 @@ classes = (
     edit_armature.COATOOLS2_OT_SetIK,
     edit_armature.COATOOLS2_OT_CreateStretchIK,
     edit_armature.COATOOLS2_OT_RemoveStretchIK,
+    edit_armature.COATOOLS2_OT_FlipBoneX,
     edit_shapekey.COATOOLS2_OT_LeaveSculptmode,
     edit_shapekey.COATOOLS2_OT_ShapekeyAdd,
     edit_shapekey.COATOOLS2_OT_ShapekeyRemove,

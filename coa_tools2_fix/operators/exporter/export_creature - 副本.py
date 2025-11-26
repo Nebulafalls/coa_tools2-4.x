@@ -370,36 +370,35 @@ class COATOOLS2_OT_CreatureExport(bpy.types.Operator):
         verts = []
         index = int(obj.active_shape_key_index)
         shape_key = obj.shape_key_add(name="tmp_mixed_mesh", from_mix=True)
-        try:
-            for i, vert in enumerate(default_vert_positions):
-                shapekey_vert = shape_key.data[i].co
-                # scale bones only when vert has bone weights and bone is scaled at any time in animation
-                if obj_name in self.bone_weights:
-                    for bone_name in self.bone_weights[obj_name]:
-                        bone = self.armature.pose.bones[bone_name]
-                        if (
-                            anim.name in self.bone_scaled
-                            and bone.name in self.bone_scaled[anim.name]
-                            and bone.name in obj.vertex_groups
-                        ):
-                            if str(i) in self.bone_weights[obj_name][bone.name]:
-                                bone_weight = self.bone_weights[obj_name][bone.name][str(i)]
-                                scaled_vert = self.scale_verts_by_bone(
-                                    bone, self.armature, obj, shapekey_vert, bone_weight
-                                )
-                                shapekey_vert = scaled_vert
-                shapekey_vert = obj.matrix_world @ shapekey_vert
+        for i, vert in enumerate(default_vert_positions):
+            # shapekey_vert = obj.matrix_world @ shape_key.data[i].co
+            shapekey_vert = shape_key.data[i].co
+            # scale bones only when vert has bone weights and bone is scaled at any time in animation
+            if obj_name in self.bone_weights:
+                for bone_name in self.bone_weights[obj_name]:
+                    bone = self.armature.pose.bones[bone_name]
+                    if (
+                        anim.name in self.bone_scaled
+                        and bone.name in self.bone_scaled[anim.name]
+                        and bone.name in obj.vertex_groups
+                    ):
+                        if str(i) in self.bone_weights[obj_name][bone.name]:
+                            bone_weight = self.bone_weights[obj_name][bone.name][str(i)]
+                            scaled_vert = self.scale_verts_by_bone(
+                                bone, self.armature, obj, shapekey_vert, bone_weight
+                            )
+                            shapekey_vert = scaled_vert
+            shapekey_vert = obj.matrix_world @ shapekey_vert
 
-                if relative:
-                    offset = (shapekey_vert - vert) * self.armature_export_scale
-                else:
-                    offset = shapekey_vert * self.armature_export_scale
-                verts.append(round(offset.x, 3))
-                verts.append(round(offset.z, 3))
-        finally:
-            obj.shape_key_remove(shape_key)
-            obj.active_shape_key_index = index
-        
+            if relative:
+                offset = (shapekey_vert - vert) * self.armature_export_scale
+            else:
+                offset = shapekey_vert * self.armature_export_scale
+            verts.append(round(offset.x, 3))
+            verts.append(round(offset.z, 3))
+        obj.shape_key_remove(shape_key)
+        obj.active_shape_key_index = index
+
         return verts
 
     def create_dupli_atlas_objects(self, context):
@@ -669,6 +668,33 @@ class COATOOLS2_OT_CreatureExport(bpy.types.Operator):
 
         return {"head": local_head_vec.xz, "tail": local_tail_vec.xz}
 
+    def get_bone_parent_mat(self, pbone):
+        if pbone.parent == None:
+            return [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+            ]
+        else:
+            matrix_array = []
+            for row in pbone.parent.matrix.row:
+                for value in row:
+                    matrix_array.append(round(value, 3))
+            return matrix_array
+
     def bone_is_keyed_on_frame(
         self, bone, frame, animation_data, type="LOCATION"
     ):  ### LOCATION, ROTATION, SCALE, ANY
@@ -740,8 +766,7 @@ class COATOOLS2_OT_CreatureExport(bpy.types.Operator):
                         if pbone.bone.use_deform:
                             start_pt = self.get_bone_head_tail(pbone, local=False)["head"]
                             end_pt = self.get_bone_head_tail(pbone, local=False)["tail"]
-                            scale_x = round(pbone.scale.x, 3)
-                            
+
                             bake_animation = (
                                 self.scene.coa_tools2.export_bake_anim
                                 and frame % self.scene.coa_tools2.export_bake_steps == 0
@@ -751,7 +776,6 @@ class COATOOLS2_OT_CreatureExport(bpy.types.Operator):
                             animation[anim_name]["bones"][str(frame)][pbone.name] = {
                                 "start_pt": [round(start_pt.x, 3), round(start_pt.y, 3)],
                                 "end_pt": [round(end_pt.x, 3), round(end_pt.y, 3)],
-                                "scale_x": scale_x  # 添加骨骼的X缩放信息
                             }
 
                     # mesh relevant data
@@ -1002,5 +1026,5 @@ class COATOOLS2_OT_CreatureExport(bpy.types.Operator):
         bpy.ops.ed.undo_push(message="Export Creature")
         bpy.ops.ed.undo()
         bpy.ops.ed.undo_push(message="Export Creature")
-        self.report({"INFO"}, "导出成功.")
+        self.report({"INFO"}, "Export successful.")
         return {"FINISHED"}

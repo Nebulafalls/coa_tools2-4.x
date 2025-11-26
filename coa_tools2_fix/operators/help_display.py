@@ -1,5 +1,5 @@
 import bpy
-import blf, bgl
+import blf
 from mathutils import Vector
 from .. functions import get_sprite_object
 import gpu
@@ -316,6 +316,6 @@ class COATOOLS2_OT_ShowHelp(bpy.types.Operator):
         
         
         # restore opengl defaults
-        bgl.glLineWidth(1)
-        bgl.glDisable(bgl.GL_BLEND)
+        #bgl.glLineWidth(1)
+        #bgl.glDisable(bgl.GL_BLEND)
         # bgl.glColor4f(0.0, 0.0, 0.0, 1.0)

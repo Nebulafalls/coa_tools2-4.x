@@ -40,7 +40,7 @@ from bpy.props import (
 # from .. functions import *
 from .. import functions
 from ..functions_draw import *
-import bgl, blf
+import  blf
 import traceback
 import pdb
 

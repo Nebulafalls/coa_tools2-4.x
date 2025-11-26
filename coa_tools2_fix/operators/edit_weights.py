@@ -19,7 +19,6 @@ Created by Aodaruma
 """
 
 import bpy
-import bgl
 import gpu
 from gpu_extras.batch import batch_for_shader
 import bpy_extras
@@ -216,9 +215,9 @@ class COATOOLS2_OT_EditWeights(bpy.types.Operator):
         scene = context.scene
         tool_settings = scene.tool_settings
         self.use_unified_strength = (
-            tool_settings.unified_paint_settings.use_unified_strength
+            #tool_settings.unified_paint_settings.use_unified_strength
         )
-        tool_settings.unified_paint_settings.use_unified_strength = True
+        #tool_settings.unified_paint_settings.use_unified_strength = True
 
         context.window_manager.modal_handler_add(self)
 

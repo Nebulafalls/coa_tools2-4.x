@@ -38,7 +38,6 @@ from bpy.props import (
 )
 from .. import functions
 from ..functions_draw import *
-import bgl
 import blf
 from math import radians, degrees
 import traceback
@@ -574,19 +573,20 @@ result = [result[0],result[4],result[5],result[1],result[2]]
 class COATOOLS2_TO_DrawPolygon(bpy.types.WorkSpaceTool):
     bl_space_type = "VIEW_3D"
     bl_context_mode = "EDIT_MESH"
-
-    # The prefix of the idname should be your add-on name.
     bl_idname = "coa_tools2.draw_polygon"
     bl_label = "Draw 2D Polygon"
-    bl_description = "Draws COA Tools Mesh Polygon"
-    bl_icon = os.path.join(
-        functions.get_coa_tools2_dir(), "icons", "coa_tools2.draw_polygon"
-    )
+    bl_description = "绘制COA网格"
+    
+    @classmethod
+    def poll(cls, context):
+        # 图标预加载
+        icons_dir = os.path.join(functions.get_coa_tools2_dir(), "icons")
+        if not hasattr(bpy.types, 'COA_icons'):
+            bpy.utils.previews_from_directory(icons_dir, 'COA_icons')
+        return True
+    
+    bl_icon = "coa_tools2.draw_polygon"  # 使用预加载的图标ID
     bl_widget = None
-    # bl_keymap = (
-    #     ("coa_tools2.draw_polygon", {"type": 'LEFTMOUSE', "value": 'PRESS'}, None),
-    # )
-
 
 class COATOOLS2_OT_DrawContour(bpy.types.Operator):
     bl_idname = "coa_tools2.edit_mesh"
@@ -1482,7 +1482,7 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
                 self.edit_object.data.coa_tools2.hide_base_sprite = True
             else:
                 self.edit_object.data.coa_tools2.hide_base_sprite = False
-            bpy.ops.coa_tools2.reproject_sprite_texture()
+            # bpy.ops.coa_tools2.reproject_sprite_texture()
 
     def execute(self, context):
         try:
@@ -1740,7 +1740,7 @@ class COATOOLS2_OT_DrawContour(bpy.types.Operator):
                     # bgl.glLineWidth(2)
 
                     if self.selected_vert_coord != None:
-                        bgl.glEnable(bgl.GL_LINE_SMOOTH)
+                        #bgl.glEnable(bgl.GL_LINE_SMOOTH)
                         vertex_vec = self.selected_vert_coord + y_offset
                         if self.point_type == "VERT":
                             color = green

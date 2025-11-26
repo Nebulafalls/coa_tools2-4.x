@@ -73,8 +73,6 @@ class TextureAtlasGenerator:
     @staticmethod
     def get_texture_bounds(obj, output_scale):
         uvs = obj.data.uv_layers[0].data
-        textures = obj.data.uv_layers[0].data
-
         image = None
 
         for node in obj.active_material.node_tree.nodes:
@@ -82,28 +80,48 @@ class TextureAtlasGenerator:
                 links = node.inputs[0].links
                 image = links[0].from_node.image if len(links) > 0 else None
 
-        if image != None:
+        if image is not None:
             img_size = image.size
+            # Initialize with high values to properly find the minimum
             bottom_left_x = 1.0
             bottom_left_y = 1.0
+            # Initialize with low values to properly find the maximum
             top_right_x = 0.0
             top_right_y = 0.0
+            
             for uv in uvs:
-                bottom_left_x = min(bottom_left_x, uv.uv[0])
-                bottom_left_y = min(bottom_left_y, uv.uv[1])
-                top_right_x = max(top_right_x, uv.uv[0])
-                top_right_y = max(top_right_y, uv.uv[1])
+                uv_co = uv.uv
+                bottom_left_x = min(bottom_left_x, uv_co.x)
+                bottom_left_y = min(bottom_left_y, uv_co.y)
+                top_right_x = max(top_right_x, uv_co.x)
+                top_right_y = max(top_right_y, uv_co.y)
+
+            # Clamp values to [0,1] range
+            bottom_left_x = max(0.0, min(bottom_left_x, 1.0))
+            bottom_left_y = max(0.0, min(bottom_left_y, 1.0))
+            top_right_x = max(0.0, min(top_right_x, 1.0))
+            top_right_y = max(0.0, min(top_right_y, 1.0))
 
             bounds_rel = [bottom_left_x, bottom_left_y, top_right_x, top_right_y]
-            bounds_px = [img_size[0] * bottom_left_x, img_size[1] * bottom_left_y, img_size[0] * top_right_x,
-                         img_size[1] * top_right_y]
+            bounds_px = [
+                img_size[0] * bottom_left_x,
+                img_size[1] * bottom_left_y,
+                img_size[0] * top_right_x,
+                img_size[1] * top_right_y
+            ]
 
-            for i, value in enumerate(bounds_px):
-                bounds_px[i] = int(bounds_px[i] * output_scale)
-            width = abs((bounds_px[2] - bounds_px[0]))
-            height = abs((bounds_px[3] - bounds_px[1]))
-            texture_data = TextureData(image.name, obj, bounds_px, bounds_rel, width, height)
-            return texture_data
+            # Round pixel values instead of truncating
+            bounds_px = [max(0, int(round(x * output_scale))) for x in bounds_px]
+            width = abs(bounds_px[2] - bounds_px[0])
+            height = abs(bounds_px[3] - bounds_px[1])
+            
+            # Ensure width and height are at least 1
+            if width == 0:
+                width = 1
+            if height == 0:
+                height = 1
+            
+            return TextureData(image.name, obj, bounds_px, bounds_rel, width, height)
         return TextureData(None, obj, [0, 0, 1, 1], [0, 0, 1, 1], 1, 1)
 
     @staticmethod
@@ -112,71 +130,52 @@ class TextureAtlasGenerator:
         for obj in objs:
             if obj.type == "MESH":
                 texture_data = TextureAtlasGenerator.get_texture_bounds(obj, output_scale)
-                if texture_data != None:
+                if texture_data is not None:
                     texture_data_list.append(texture_data)
 
         texture_data_list = sorted(texture_data_list,
-                                   key=lambda x: x.width * x.height + math.pow(x.width, 1) + math.pow(x.height, 1),
-                                   reverse=True)
+                                 key=lambda x: x.width * x.height + math.pow(x.width, 1) + math.pow(x.height, 1),
+                                 reverse=True)
         return texture_data_list
 
     @staticmethod
     def texture_intersects_others(texture_data, texture_slot, atlas_data):
         tex_fits_width = texture_slot.x + (texture_data.width + atlas_data.margin) < atlas_data.width
         tex_fits_height = texture_slot.y + (texture_data.height + atlas_data.margin) < atlas_data.height
-        if tex_fits_width == False or tex_fits_height == False:
+        if not tex_fits_width or not tex_fits_height:
             return True
+
         for slot in atlas_data.texture_slots:
-            if slot.texture_data != None and slot != texture_slot:
+            if slot.texture_data is not None and slot != texture_slot:
+                r1 = [
+                    texture_slot.x,
+                    texture_slot.y,
+                    texture_slot.x + texture_data.width,
+                    texture_slot.y + texture_data.height
+                ]
+                r2 = [
+                    slot.x,
+                    slot.y,
+                    slot.x + slot.texture_data.width,
+                    slot.y + slot.texture_data.height
+                ]
 
-                r1 = []
-                r1.append(texture_slot.x)
-                r1.append(texture_slot.y)
-                r1.append(texture_slot.x + texture_data.width)
-                r1.append(texture_slot.y + texture_data.height)
-                r2 = []
-                r2.append(slot.x)
-                r2.append(slot.y)
-                r2.append(slot.x + slot.texture_data.width)
-                r2.append(slot.y + slot.texture_data.height)
-
-                points_a = []
-                points_a.append(Vector((r1[0], r1[1])))
-                points_a.append(Vector((r1[2], r1[1])))
-                points_a.append(Vector((r1[2], r1[3])))
-                points_a.append(Vector((r1[0], r1[3])))
-                lines_a = [[points_a[0], points_a[1]], [points_a[1], points_a[2]], [points_a[2], points_a[3]],
-                           [points_a[3], points_a[0]]]
-
-                points_b = []
-                points_b.append(Vector((r2[0], r2[1])))
-                points_b.append(Vector((r2[2], r2[1])))
-                points_b.append(Vector((r2[2], r2[3])))
-                points_b.append(Vector((r2[0], r2[3])))
-                lines_b = [[points_b[0], points_b[1]], [points_b[1], points_b[2]], [points_b[2], points_b[3]],
-                           [points_b[3], points_b[0]]]
-
-                for line_a in lines_a:
-                    for line_b in lines_b:
-                        i = intersect_line_line_2d(line_a[0], line_a[1], line_b[0], line_b[1])
-                        if i != None:
-                            return True
-
+                # 检查矩形是否相交（轴对齐包围盒检测）
+                if not (r1[2] < r2[0] or r1[0] > r2[2] or r1[3] < r2[1] or r1[1] > r2[3]):
+                    return True
         return False
 
     @staticmethod
     def create_texture_atlas_data(texture_data_list, atlas_name, width, height, max_width, max_height, margin=0,
-                                  square=True, output_scale=1.0):
+                              square=True, output_scale=1.0):
         atlas_data = TextureAtlas(atlas_name, width, height, max_width, max_height, margin, square, output_scale)
-        objects = []
-        for texture_data in texture_data_list:
-            objects.append(texture_data.texture_object)
+        objects = [td.texture_object for td in texture_data_list]
 
         restart_generation = True
         decrease_scale = False
-        while restart_generation == True:
-
-            if restart_generation == True:
+        step = 512  # 使用固定步长扩展图集
+        while restart_generation:
+            if restart_generation:
                 if decrease_scale:
                     atlas_data.output_scale *= 0.95
                     decrease_scale = False
@@ -184,33 +183,31 @@ class TextureAtlasGenerator:
                 atlas_data.cleanup_slots()
                 restart_generation = False
 
-            for i, texture_data in enumerate(texture_data_list):
+            for texture_data in texture_data_list:
                 if restart_generation:
                     break
-                for j, texture_slot in enumerate(atlas_data.texture_slots):
-                    if texture_slot.texture_data == None:
-                        tex_intersects_other = TextureAtlasGenerator.texture_intersects_others(texture_data,
-                                                                                               texture_slot, atlas_data)
-                        if tex_intersects_other and j == len(atlas_data.texture_slots) - 1:
-                            if atlas_data.width == atlas_data.height and atlas_data.height < atlas_data.max_height:
-                                atlas_data.height *= 2
-                                if atlas_data.square:
-                                    if atlas_data.width < atlas_data.height:
-                                        atlas_data.width *= 2
-                            elif atlas_data.height > atlas_data.width and atlas_data.width < atlas_data.max_width:
-                                atlas_data.width *= 2
 
-                            if atlas_data.width >= atlas_data.max_width and atlas_data.height >= atlas_data.max_height:
-                                decrease_scale = True
-                                print("Max Atlas size of ", atlas_data.width, "x", atlas_data.height,
-                                      " reached. Decreasing texture size and restarting generation.")
+                for texture_slot in atlas_data.texture_slots:
+                    if texture_slot.texture_data is None:
+                        tex_intersects_other = TextureAtlasGenerator.texture_intersects_others(
+                            texture_data, texture_slot, atlas_data)
+
+                        if tex_intersects_other and texture_slot == atlas_data.texture_slots[-1]:
+                            # 如果无法放入，尝试扩展图集或缩小纹理
+                            if atlas_data.width < atlas_data.max_width and atlas_data.height < atlas_data.max_height:
+                                atlas_data.width += step
+                                atlas_data.height += step
+                                if atlas_data.square:
+                                    atlas_data.width = atlas_data.height = min(atlas_data.width, atlas_data.height)
                             else:
-                                print("Current Atlas size is to small. Increasing to", atlas_data.width, "x", atlas_data.height,
-                                      " and restarting generation.")
+                                decrease_scale = True
+                                print(f"Max Atlas size of {atlas_data.width}x{atlas_data.height} reached. Decreasing texture size.")
+                            
                             restart_generation = True
 
                         if restart_generation:
                             break
+
                         if not tex_intersects_other:
                             texture_slot.texture_data = texture_data
                             x1 = texture_slot.x + texture_data.width
@@ -232,7 +229,7 @@ class TextureAtlasGenerator:
                 if node.type == "GROUP" and node.node_tree.name == constants.COA_NODE_GROUP_NAME:
                     links = node.inputs[0].links
                     tex_node = links[0].from_node if len(links) > 0 else None
-                    if tex_node != None and tex_node.type == 'TEX_IMAGE':
+                    if tex_node is not None and tex_node.type == 'TEX_IMAGE':
                         tex_node.interpolation = "Linear"
 
             if "COA Bake Node" not in mat.node_tree.nodes:
@@ -253,19 +250,19 @@ class TextureAtlasGenerator:
                 if node.type == "GROUP" and node.node_tree.name == constants.COA_NODE_GROUP_NAME:
                     links = node.inputs[1].links
                     tex_node = links[0].from_node if len(links) > 0 else None
-                    if tex_node != None:
+                    if tex_node is not None:
                         mat.node_tree.links.new(tex_node.outputs[1], node.inputs[0])
-                    elif node.inputs[0].links[0] != None:
+                    elif node.inputs[0].links[0] is not None:
                         value_node = mat.node_tree.nodes.new('ShaderNodeValue')
                         value_node.outputs[0].default_value = node.inputs[1].default_value
                         mat.node_tree.links.new(value_node.outputs[0], node.inputs[0])
 
     @staticmethod
     def generate_uv_layout(name="texture_atlas", objects=None, width=256, height=256, max_width=2048, max_height=2048,
-                           margin=1, texture_bleed=0, square=True, output_scale=1.0):
+                      margin=1, texture_bleed=0, square=True, output_scale=1.0):
         context = bpy.context
 
-        ### Create new Collection for Rendering
+        # Create new Collection for Rendering
         for collection in context.scene.collection.children:
             collection.hide_render = True
 
@@ -273,71 +270,80 @@ class TextureAtlasGenerator:
         context.scene.collection.children.link(render_collection)
         render_collection.hide_render = False
 
-        if("COA Export Collection" in bpy.data.collections):
+        if "COA Export Collection" in bpy.data.collections:
             bpy.data.collections["COA Export Collection"].hide_render = True
 
-        ### Extract texture data from given objects. Gives texture width, height and boundaries
+        # Extract texture data from given objects
         texture_data_list = TextureAtlasGenerator.get_sorted_texture_data(objects, output_scale)
 
+        # Generate Atlas data
+        atlas_data = TextureAtlasGenerator.create_texture_atlas_data(
+            texture_data_list, name, width, height, max_width, max_height, margin, square, output_scale)
 
-        ### Generates Atlas data which is later used to create uv data
-        atlas_data = TextureAtlasGenerator.create_texture_atlas_data(texture_data_list, name, width, height, max_width,
-                                                                     max_height, margin, square, output_scale)
-
-        ### create new object with atlas uv layout
-        slot_len = 0
+        # Create new object with atlas uv layout
         uv_objs = []
         atlas_objs = []
         for slot in atlas_data.texture_slots:
-            # if slot.texture_data != None and slot.texture_data.img_name == None:
-            #     obj = slot.texture_data.texture_object
-            #     uv_objs.append(obj)
-            if slot.texture_data != None:# and slot.texture_data.img_name != None:
-                slot_len += 1
+            if slot.texture_data is not None:
                 obj = slot.texture_data.texture_object
                 uv_objs.append(obj)
                 uv_map = obj.data.uv_layers.new(name="COA_UV_ATLAS")
                 uv_layer = obj.data.uv_layers["COA_UV_ATLAS"]
 
+                # Calculate UV transformation
                 uv_old_width = slot.texture_data.bounds_rel[2] - slot.texture_data.bounds_rel[0]
                 uv_old_height = slot.texture_data.bounds_rel[3] - slot.texture_data.bounds_rel[1]
                 uv_old_pos = Vector((slot.texture_data.bounds_rel[0], slot.texture_data.bounds_rel[1]))
 
+                # Adjust position calculation to fix the alignment issue
                 uv_new_width = slot.texture_data.width / atlas_data.width
                 uv_new_height = slot.texture_data.height / atlas_data.height
-                uv_new_pos = Vector((slot.x / atlas_data.width, slot.y / atlas_data.height))
+                uv_new_pos = Vector((
+                    (slot.x + margin) / atlas_data.width,
+                    (slot.y + margin) / atlas_data.height
+                ))
 
-                scale_x = uv_new_width / uv_old_width
-                scale_y = uv_new_height / uv_old_height
+                # Avoid division by zero
+                scale_x = uv_new_width / uv_old_width if uv_old_width > 0 else 1.0
+                scale_y = uv_new_height / uv_old_height if uv_old_height > 0 else 1.0
 
-                uv_flip_y = (1.0 - uv_new_height) - 2 * (uv_new_pos.y)
-
+                # Remap UV coordinates
                 for uv_data in uv_layer.data:
-                    uv = uv_data.uv
-                    uv -= uv_old_pos
-                    uv[0] *= scale_x
-                    uv[1] *= scale_y
-                    uv += uv_new_pos
-                    uv_data.uv += Vector((0, uv_flip_y))
+                    uv = uv_data.uv.copy()
+                    # 移除可能的镜像效果，使用绝对值
+                    uv.x = abs((uv.x - uv_old_pos.x) * scale_x) + uv_new_pos.x
+                    uv.y = abs((uv.y - uv_old_pos.y) * scale_y) + uv_new_pos.y
+                    # Clamp to [0,1] range
+                    uv.x = max(0.0, min(uv.x, 1.0))
+                    uv.y = max(0.0, min(uv.y, 1.0))
+                    uv_data.uv = uv
 
-                # copy atlas objects and position them properly for rendering
+                # Copy atlas objects and position them properly for rendering
                 atlas_obj = obj.copy()
                 atlas_obj.data = atlas_obj.data.copy()
+                
+                # Reset shape keys
+                if atlas_obj.data.shape_keys is not None:
+                    for key_block in atlas_obj.data.shape_keys.key_blocks:
+                        if key_block != atlas_obj.data.shape_keys.reference_key:
+                            key_block.value = 0.0
+                
                 render_collection.objects.link(atlas_obj)
                 atlas_objs.append(atlas_obj)
                 atlas_obj.coa_tools2.driver_remove("alpha")
                 atlas_obj.coa_tools2.alpha = 1.0
 
+                # Calculate object scale and position
                 obj_scale_x = (atlas_obj.dimensions[0]/atlas_obj.scale[0]) / slot.texture_data.width
                 obj_scale_y = (atlas_obj.dimensions[2]/atlas_obj.scale[2]) / slot.texture_data.height
                 atlas_obj.location = [slot.x, 0, -slot.y]
                 atlas_obj.scale[0] = 1.0/obj_scale_x
                 atlas_obj.scale[2] = 1.0/obj_scale_y
+                
+                # Center the mesh
                 x = math.inf
                 y = -math.inf
                 verts = atlas_obj.data.vertices
-                if atlas_obj.data.shape_keys is not None and len(atlas_obj.data.shape_keys.key_blocks) > 0:
-                    verts = atlas_obj.data.shape_keys.key_blocks[0].data
                 for vert in verts:
                     if vert.co[0] < x:
                         x = vert.co[0]
@@ -347,17 +353,19 @@ class TextureAtlasGenerator:
                     vert.co[0] -= x
                     vert.co[2] -= y
 
-        # add render camera and setup render settings
+        # Add render camera and setup render settings
         bpy.ops.object.camera_add()
         cam = bpy.context.active_object
         render_collection.objects.link(cam)
         cam.data.type = "ORTHO"
-        cam.location[0] = atlas_data.width * .5
-        cam.location[2] = -atlas_data.height * .5
+        cam.location[0] = atlas_data.width * 0.5
+        cam.location[2] = -atlas_data.height * 0.5
         cam.location[1] = -10
-        cam.rotation_euler[0] = math.pi * .5
+        cam.rotation_euler[0] = math.pi * 0.5
         cam.data.ortho_scale = max(atlas_data.width, atlas_data.height)
-        context.scene.render.image_settings.compression = 0#85
+        
+        # Configure render settings
+        context.scene.render.image_settings.compression = 0
         context.scene.render.resolution_x = atlas_data.width
         context.scene.eevee.taa_render_samples = 16
         context.scene.render.resolution_y = atlas_data.height
@@ -367,10 +375,12 @@ class TextureAtlasGenerator:
         context.scene.camera = cam
         context.scene.world.color = [0, 0, 0]
         context.scene.world.use_nodes = False
+        
+        # Render the atlas
         bpy.ops.render.render()
         atlas_img = bpy.data.images["Render Result"]
 
-        # merge uv objects into one
+        # Merge uv objects into one
         for obj in context.selected_objects:
             obj.select_set(False)
         for obj in uv_objs:
@@ -386,10 +396,7 @@ class TextureAtlasGenerator:
             vert.select = True
             vert.hide = False
 
-        if("COA Export Collection" in bpy.data.collections):
+        if "COA Export Collection" in bpy.data.collections:
             bpy.data.collections["COA Export Collection"].hide_render = False
 
         return atlas_img, merged_uv_obj, atlas_data
-
-
-# TextureAtlasGenerator.generate_uv_layout(name="texture_atlas", objects=bpy.context.selected_objects, width=256,height=256, max_width=1024, max_height=1024, margin=1, texture_bleed=0,square=True, output_scale=1.0)
